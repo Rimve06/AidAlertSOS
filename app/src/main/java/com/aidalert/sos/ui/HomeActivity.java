@@ -6,7 +6,7 @@ import android.text.InputType;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.aidalert.sos.data.Incident;
@@ -20,7 +20,7 @@ import com.aidalert.sos.util.NetUtil;
 import com.aidalert.sos.util.Perms;
 
 /** Citizen home: on-screen SOS button, trigger help, disaster toggles and navigation. */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
     private ActivityHomeBinding b;
     private Prefs prefs;
     private final Runnable refresher = new Runnable() {
@@ -64,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         b.btnContacts.setOnClickListener(v -> startActivity(new Intent(this, ContactsActivity.class)));
         b.btnProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         b.btnHistory.setOnClickListener(v -> startActivity(new Intent(this, ReportsActivity.class)));
+        b.btnAlerts.setOnClickListener(v -> startActivity(new Intent(this, AlertsActivity.class)));
         b.btnSettings.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
 
         b.switchDistress.setOnCheckedChangeListener((btn, on) -> {

@@ -1,6 +1,14 @@
 package com.aidalert.sos.engine;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.aidalert.sos.channel.DeliveryChannel;
+import com.aidalert.sos.channel.DeliveryException;
+import com.aidalert.sos.channel.InternetChannel;
+import com.aidalert.sos.channel.LanChannel;
+import com.aidalert.sos.channel.RelayChannel;
+import com.aidalert.sos.channel.SmsChannel;
 
 import com.aidalert.sos.data.Db;
 import com.aidalert.sos.data.Incident;
@@ -16,9 +24,8 @@ import com.aidalert.sos.util.SmsHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Gets an SOS out of the phone, over the best channel available, in this order:
@@ -29,10 +36,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * All methods block: call them from AppExecutors.io().
  */
 public final class Dispatcher {
+    private static final String TAG = "AidDispatch";
+
     private Dispatcher() {}
 
-    private static final Map<String, Long> LAST_SMS = new ConcurrentHashMap<>();
-    private static final Map<String, Long> LAST_RELAY = new ConcurrentHashMap<>();
+    /** Tried in this order when the internet channel is not available or fails. */
+    private static final List<DeliveryChannel> FALLBACK =
+            Arrays.asList(new LanChannel(), new SmsChannel(), new RelayChannel());
+    private static final InternetChannel INTERNET = new InternetChannel();
 
     public static void sendInitial(Context app, Incident i) {
         transmit(app, i, true);
@@ -44,58 +55,25 @@ public final class Dispatcher {
     }
 
     private static void transmit(Context app, Incident i, boolean important) {
-        Db db = Db.get(app);
         boolean ok = false;
-        if (NetUtil.isOnline(app)) {
-            FirebaseRest rest = new FirebaseRest(app);
-            i.via = "INTERNET";
-            ok = rest.put("incidents/" + i.id + "/report", i.toReportJson());
-            if (ok && i.hasFix()) {
-                JSONObject pt = new JSONObject();
-                try {
-                    pt.put("lat", i.lat);
-                    pt.put("lon", i.lon);
-                    pt.put("t", System.currentTimeMillis());
-                    rest.post("tracks/" + i.id, pt);
-                } catch (JSONException ignored) {
-                    // skip this trail point
-                }
+        if (INTERNET.isAvailable(app)) {
+            try {
+                INTERNET.deliver(app, i, true);
+                ok = true;
+            } catch (DeliveryException e) {
+                Log.w(TAG, "internet failed: " + e.getMessage());
             }
         }
         i.synced = ok;
-        db.setSynced(i.id, ok);
-        if (!ok) offlineFallback(app, i, important);
-    }
-
-    private static void offlineFallback(Context app, Incident i, boolean important) {
-        Prefs p = Prefs.of(app);
-        long now = System.currentTimeMillis();
-
-        // 1) SMS to the control center: first one at once, later ones at most every 3 minutes.
-        String center = p.centerPhone();
-        Long lastSms = LAST_SMS.get(i.id);
-        if (!center.isEmpty() && (important || lastSms == null || now - lastSms > 180_000)) {
-            String text = SmsProtocol.encode(i.id, i.type, i.lat, i.lon, now, i.userId, i.userName, i.phone);
-            if (SmsHelper.send(app, center, text)) LAST_SMS.put(i.id, now);
-        }
-
-        // 2) Encrypted packet for phones that happen to be nearby (store-and-forward).
-        String pub = p.centerPub();
-        Long lastRelay = LAST_RELAY.get(i.id);
-        if (!pub.isEmpty() && (important || lastRelay == null || now - lastRelay > 60_000)) {
+        Db.get(app).setSynced(i.id, ok);
+        if (ok) return;
+        // Offline: use every fallback channel that works (they are throttled internally).
+        for (DeliveryChannel ch : FALLBACK) {
+            if (!ch.isAvailable(app)) continue;
             try {
-                JSONObject report = i.toReportJson();
-                report.put("via", "RELAY");
-                Db.Packet pk = new Db.Packet();
-                pk.id = i.id + "-" + (now / 1000);
-                pk.payload = Crypto.encrypt(pub, report.toString().getBytes(StandardCharsets.UTF_8));
-                pk.hops = 0;
-                pk.created = now;
-                Db.get(app).savePacket(pk);
-                LAST_RELAY.put(i.id, now);
-                RelayManager.get(app).nudge();
-            } catch (JSONException | RuntimeException ignored) {
-                // key missing or malformed: SMS above is still the fallback
+                ch.deliver(app, i, important);
+            } catch (DeliveryException e) {
+                Log.w(TAG, ch.name() + " failed: " + e.getMessage());
             }
         }
     }

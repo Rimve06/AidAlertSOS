@@ -3,7 +3,7 @@ package com.aidalert.sos.ui.center;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.databinding.ActivityDisasterAdminBinding;
@@ -28,7 +28,7 @@ import java.util.Locale;
  * Only those answers are plotted (location is never read otherwise). Distressed people can switch their
  * sharing off, which deletes their dot. The list can be handed to the national rescue system.
  */
-public class DisasterAdminActivity extends AppCompatActivity {
+public class DisasterAdminActivity extends BaseActivity {
     private ActivityDisasterAdminBinding b;
     private final RowAdapter adapter = new RowAdapter();
     private final List<String[]> distressed = new ArrayList<>();

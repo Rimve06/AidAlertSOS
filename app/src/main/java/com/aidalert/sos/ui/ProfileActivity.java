@@ -2,7 +2,7 @@ package com.aidalert.sos.ui;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivityProfileBinding;
@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Profile + privacy switches. The public directory entry holds only what the user agrees to show. */
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
     private ActivityProfileBinding b;
     private Prefs p;
 

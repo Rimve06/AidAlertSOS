@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.Config;
 import com.aidalert.sos.data.Db;
@@ -24,7 +24,7 @@ import com.aidalert.sos.util.Notifier;
  * forwarded to the control center, which then calls the right service. Contacts get a text and the
  * preselected number is called when the type is chosen (or after a short timeout).
  */
-public class EmergencyTypeActivity extends AppCompatActivity {
+public class EmergencyTypeActivity extends BaseActivity {
     private ActivityEmergencyTypeBinding b;
     private Prefs prefs;
     private long openedAt;

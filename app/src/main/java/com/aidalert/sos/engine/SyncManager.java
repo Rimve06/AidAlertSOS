@@ -68,6 +68,7 @@ public final class SyncManager {
         if (!pub.isEmpty()) p.centerPub(pub);
         String phone = cfg.optString("phone", "");
         if (!phone.isEmpty()) p.centerPhone(phone);
+        if (cfg.has("feedUrl")) p.feedUrl(cfg.optString("feedUrl", ""));
         if (cfg.has("ambulance")) p.numAmbulance(cfg.optString("ambulance", "999"));
         if (cfg.has("fire")) p.numFire(cfg.optString("fire", "199"));
         if (cfg.has("police")) p.numPolice(cfg.optString("police", "999"));

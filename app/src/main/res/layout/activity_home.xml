@@ -198,6 +198,14 @@
                 android:text="My SOS history" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAlerts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="3dp"
+                android:text="Public alerts (XML)" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSettings"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

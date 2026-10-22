@@ -13,7 +13,7 @@ Only course content is used: Java, XML layouts, view binding, RecyclerView, cust
 
 1. Android Studio (Koala or newer), JDK 17. `File > Open` the `AidAlertSOS` folder and let Gradle sync (AGP 8.5.2, Gradle 8.7 from `gradle/wrapper/gradle-wrapper.properties`).
 2. Create a free Firebase project > **Realtime Database** > create database. Copy its URL, for example `https://myproject-default-rtdb.firebaseio.com`.
-3. For development set the rules to (this is open - use only for testing, see section 7):
+3. For development set the rules to (this is open - use only for testing, see section 8):
    ```json
    { "rules": { ".read": true, ".write": true } }
    ```
@@ -44,34 +44,67 @@ Android never delivers the power key to apps. The guard service counts the scree
 
 ## 4. Offline chain
 
-SIM SMS -> Nearby Connections relay (Bluetooth / Wi-Fi direct, `P2P_CLUSTER`). Every phone with the relay switch on swaps packets with phones it meets. Packets are **AES-GCM encrypted with a key wrapped by the control center's RSA public key**, so relaying phones and their owners cannot read them. The first phone that gets internet uploads them to `relay/`; the control center decrypts them and creates the incident. Duplicate packets are ignored and hops are capped at 8.
+Internet -> **LAN socket** (same Wi-Fi / hotspot, no internet needed) -> SIM SMS -> Nearby Connections relay (Bluetooth / Wi-Fi direct, `P2P_CLUSTER`). Every phone with the relay switch on swaps packets with phones it meets. Packets are **AES-GCM encrypted with a key wrapped by the control center's RSA public key**, so relaying phones and their owners cannot read them. The first phone that gets internet uploads them to `relay/`; the control center decrypts them and creates the incident. Duplicate packets are ignored and hops are capped at 8.
 
 ## 5. Other features
 
+* **LAN socket channel**: the control-center phone runs a `ServerSocket` (port 8765). A citizen phone on the same Wi-Fi or on the center's hotspot sends the alert over a TCP socket (address typed in Settings, or the Wi-Fi gateway by default). The center's home screen shows its LAN address.
+* **XML alert feed**: the center sets an RSS / Atom / CAP feed URL; citizens open *Public alerts*, the app downloads it over HTTP and parses it with a SAX parser.
 * **Disaster mode**: operator sends a check-in query; every app gets a notification. Users choose *I am safe* (one position) or *I need rescue* (distress mode, position every minute, switch off anytime which deletes the record). Dots appear on the map; the rescue list can be shared with the national rescue system.
 * **Nearby helpers**: opt-in. The distance check runs on the helper's phone; nothing is uploaded until they tap *I can help*.
 * **Records**: missing persons / wanted criminals published by the center are copied to every phone's SQLite database (readable offline) with a notification.
 * **Two-way chat**: center <-> one user, center -> all users (announcement), user -> center. Community forum and user-to-user chat unlock **only while the user's own SOS is active**, and the center can read them.
 * **Privacy**: location only after SOS / distress toggle / check-in / helper accept; user ids are hashes of the phone number; passwords are salted PBKDF2 hashes; public profile fields and phone visibility are opt-in; medical data attaches to an SOS only if enabled.
 
-## 6. Code map
+## 6. Syllabus coverage (21.17.5 Course Content, and the weekly lab plan)
+
+| Syllabus topic | Where it is in this app |
+|---|---|
+| Java concepts, OOP review | Model classes `Incident`, `Msg`, `Db.Contact/Record/Packet`; encapsulation, static nested classes, generics, collections, lambdas |
+| Inheritance | `BaseActivity` is the parent of all 20 screens; `AbstractChannel` -> `InternetChannel`, `SmsChannel`, `RelayChannel`, `LanChannel`; `AlertFeedParser.Handler extends DefaultHandler`; custom views extend `View` |
+| Polymorphism / interfaces | `DeliveryChannel` interface (the dispatcher loops over a `List<DeliveryChannel>`); listener interfaces in `HoldButtonView`, `MapView`, `RowAdapter`, `LocationHelper` |
+| Exception handling | custom checked `DeliveryException`; try/catch/finally; try-with-resources in `Http`, `LanServer`, `LanChannel`, `Db` |
+| Packages | `channel`, `data`, `engine`, `net`, `ui`, `ui.center`, `util`, `view` |
+| GUI, layouts | 20 XML layouts (LinearLayout, GridLayout, ScrollView, HorizontalScrollView, RadioGroup), Material buttons, view binding |
+| Custom view | `view/MapView` (draws dots, trail, tap detection), `view/HoldButtonView` (hold-to-confirm ring animation) |
+| Scalable UI, UX | dp/sp units, weights and `columnWeight`, scrolling screens; hold-to-confirm, confirmation dialogs, empty/locked states, permission checklist. (No separate tablet layouts.) |
+| Multithreading | `AppExecutors` (fixed + scheduled pools), plain `Thread` in `LanServer`, `synchronized` in `SosEngine`/`Db`/`RelayManager`, `ConcurrentHashMap`, `Handler` for the UI thread |
+| Socket programming | `engine/LanServer` (ServerSocket) and `channel/LanChannel` (Socket) |
+| Activity | 20 activities, lifecycle callbacks logged by `BaseActivity` (tag `AidLifecycle` in Logcat), explicit Intents between screens, implicit Intents (`geo:` map, `ACTION_SEND` share, `ACTION_DIAL`, system settings) |
+| Services | `engine/SosGuardService` (foreground service), `KeyAccessibilityService` |
+| Broadcast receiver | `SmsReceiver`, `BootReceiver`, runtime-registered screen on/off + user-present + network callback inside `SosGuardService` |
+| Content provider | `data/IncidentProvider`, read through `ContentResolver` in `ReportsActivity` |
+| Basic networking, HTTP, API | `net/FirebaseRest` (GET/PUT/POST/DELETE with `HttpURLConnection`), `net/Http` |
+| Database manipulation | `data/Db` (SQLite: create, insert, update, delete, query, transactions) |
+| Advanced APIs | Location, Telephony SMS, Telecom call, Nearby Connections, foreground service types, full-screen notifications, accessibility, `javax.crypto` (AES-GCM, RSA-OAEP, PBKDF2) |
+| Parsing JSON | `org.json` in `FirebaseRest`, `Incident`, `SyncManager` |
+| Parsing XML | `net/AlertFeedParser` (SAX) + `ui/AlertsActivity` |
+| Firebase database (week 11) | Realtime Database through its REST API |
+| Git (week 2) | meaningful commits in the repository history |
+| Gradle, manifest, project architecture (week 8) | `build.gradle`, `settings.gradle`, `gradlew`, `AndroidManifest.xml` (permissions, services, receivers, provider) |
+
+Not part of this project: the JavaFX desktop topics (weeks 3-7) are a separate individual assignment with its own idea.
+
+## 7. Code map
 
 ```
 engine/   PowerTapDetector, SosEngine, SosGuardService (foreground service), KeyAccessibilityService,
-          SmsReceiver / BootReceiver (BroadcastReceivers), Dispatcher, RelayManager, SyncManager, LocationHelper
+          SmsReceiver / BootReceiver (BroadcastReceivers), Dispatcher, RelayManager, SyncManager, LocationHelper,
+          LanServer, IncidentIngest
+channel/  DeliveryChannel, AbstractChannel, Internet/Sms/Relay/LanChannel, DeliveryException
 data/     Db (SQLite), IncidentProvider (ContentProvider), Incident, Prefs, Msg
-net/      FirebaseRest (HttpURLConnection + JSON), Crypto, SmsProtocol
+net/      FirebaseRest (HttpURLConnection + JSON), Http, AlertFeedParser (SAX), Crypto, SmsProtocol
 view/     MapView, HoldButtonView  (custom views)
 ui/       citizen screens;  ui/center/  control-center screens;  RowAdapter (RecyclerView)
 ```
 
 Firebase layout: `users, directory, config/center, incidents/{id}/report|ops, tracks, relay, records, disasters, checkins, helpRequests, helpResponses, msgs/{uid}, broadcasts, forum, dm, dmIndex`.
 
-Unit tests (`app/src/test`) cover the power-sequence rule, SMS format, encryption, password hashing and distance.
+Unit tests (`app/src/test`, 12 tests) cover the power-sequence rule, SMS format, encryption, password hashing, distance and the XML feed parser.
 
-## 7. Known limits (be honest in your demo / report)
+## 8. Known limits (be honest in your demo / report)
 
-* **Not run on a device by the author of this code.** It was written without Android Studio or an emulator available: layouts/IDs, XML, manifest wiring and the pure-Java logic (10 unit tests) were checked, but a first Gradle sync may show small compile fixes. Test on real phones.
+* **Verification status.** The whole app compiles with `javac` against the real Android 34 `android.jar` (androidx, Material and Nearby classes were replaced by signature stubs because the Maven repositories were not reachable), 12 JUnit tests pass, view-binding ids / manifest classes / XML were cross-checked by script. It has **not** been built with Gradle/AGP and **not** run on a phone or emulator. Expect to fix small things on the first sync and test every feature on real devices.
 * Phone vendors (Xiaomi, Oppo, Samsung ...) kill background services: set battery to *Unrestricted* and allow auto-start.
 * Android may block starting an activity from the background; the app then falls back to a full-screen notification. Keep "Show over other apps" enabled.
 * Silent calling needs `CALL_PHONE`; Android does not let apps hide the call screen or force speaker/mic on the callee side. The operator hears the phone's surroundings through the normal call.

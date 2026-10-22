@@ -95,6 +95,14 @@ public final class Prefs {
     public String numRescue() { return str("numRescue", "999"); }
     public void numRescue(String v) { putStr("numRescue", v); }
 
+    /** Optional LAN address of the control center phone (socket channel). Empty = Wi-Fi gateway. */
+    public String lanHost() { return str("lanHost", ""); }
+    public void lanHost(String v) { putStr("lanHost", v == null ? "" : v.trim()); }
+
+    /** XML alert feed (RSS / Atom / CAP-like) published by the control center. */
+    public String feedUrl() { return str("feedUrl", ""); }
+    public void feedUrl(String v) { putStr("feedUrl", v == null ? "" : v.trim()); }
+
     // ------------------------------------------------------------ keys (hybrid encryption)
     public String centerPub() { return str("centerPub", ""); }
     public void centerPub(String v) { putStr("centerPub", v); }

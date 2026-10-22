@@ -2,7 +2,7 @@ package com.aidalert.sos.ui;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.aidalert.sos.databinding.ActivityDisasterRespondBinding;
@@ -15,7 +15,7 @@ import com.aidalert.sos.util.Perms;
  * "I am safe" (one position) or "I need rescue" (distress mode: position every minute, can be turned
  * off again on the home screen).
  */
-public class DisasterRespondActivity extends AppCompatActivity {
+public class DisasterRespondActivity extends BaseActivity {
     public static final String EXTRA_ID = "disaster_id";
     public static final String EXTRA_TITLE = "disaster_title";
     public static final String EXTRA_MESSAGE = "disaster_message";

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.data.Incident;
 import com.aidalert.sos.data.Prefs;
@@ -31,7 +31,7 @@ import java.util.List;
  * workflow acknowledge -> confirm with the user -> dispatch services -> resolve.
  * Dialing a number opens the dialer; a human operator presses call (no automatic dispatch).
  */
-public class IncidentDetailActivity extends AppCompatActivity {
+public class IncidentDetailActivity extends BaseActivity {
     public static final String EXTRA_ID = "incident_id";
 
     private ActivityIncidentDetailBinding b;

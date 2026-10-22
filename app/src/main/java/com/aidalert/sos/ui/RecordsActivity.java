@@ -9,7 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Db;
@@ -31,7 +31,7 @@ import java.util.List;
  *  - Citizens: read the copy stored in their own SQLite database (works offline).
  *  - Control center: reads from the server, can add records (pushed to every phone) and delete them.
  */
-public class RecordsActivity extends AppCompatActivity {
+public class RecordsActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
     private boolean center;

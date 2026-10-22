@@ -82,6 +82,7 @@
         <activity android:name=".ui.ChatActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.RecordsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.ReportsActivity" android:exported="false" />
+        <activity android:name=".ui.AlertsActivity" android:exported="false" />
         <activity android:name=".ui.SettingsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.PermissionsActivity" android:exported="false" />
         <activity android:name=".ui.DisasterRespondActivity" android:exported="false" android:showWhenLocked="true" />

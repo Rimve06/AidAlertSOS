@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Prefs;
@@ -24,7 +24,7 @@ import java.util.Locale;
  * Profile search. Only the public "directory" entry is read (name, area, bio, and a phone number
  * only if its owner chose to show it). Messaging is allowed only while the user's own SOS is active.
  */
-public class SearchUsersActivity extends AppCompatActivity {
+public class SearchUsersActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
     private Prefs prefs;

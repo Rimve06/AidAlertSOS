@@ -55,6 +55,14 @@
             android:importantForAutofill="no"
             android:inputType="textUri" />
 
+        <EditText
+            android:id="@+id/editLan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Control center LAN address (optional, e.g. 192.168.43.1)"
+            android:importantForAutofill="no"
+            android:inputType="textUri" />
+
         <TextView
             android:id="@+id/txtCenterInfo"
             android:layout_width="match_parent"

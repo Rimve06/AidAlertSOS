@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.databinding.ActivityListBinding;
@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /** Chat monitoring: the community forum and every user-to-user thread, read only. */
-public class MonitorActivity extends AppCompatActivity {
+public class MonitorActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
 

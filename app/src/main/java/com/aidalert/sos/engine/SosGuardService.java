@@ -107,6 +107,7 @@ public class SosGuardService extends Service {
             }, 3, Config.SYNC_INTERVAL_S, TimeUnit.SECONDS);
         }
         SosEngine.get(this).resumeDistressIfOn();
+        if (Prefs.of(this).isCenter()) LanServer.get(this).start();
         if (Prefs.of(this).relayOn()) RelayManager.get(this).start();
         return START_STICKY;
     }
@@ -142,6 +143,7 @@ public class SosGuardService extends Service {
             syncTask = null;
         }
         RelayManager.get(this).stop();
+        LanServer.get(this).stop();
         super.onDestroy();
     }
 

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.aidalert.sos.engine.PowerTapDetector;
+import com.aidalert.sos.net.AlertFeedParser;
 import com.aidalert.sos.net.Crypto;
 import com.aidalert.sos.net.SmsProtocol;
 import com.aidalert.sos.util.Geo;
@@ -119,5 +120,36 @@ public class CoreLogicTest {
         double km = Geo.distanceKm(23.8103, 90.4125, 22.3569, 91.7832);
         assertTrue(km > 205 && km < 230);
         assertEquals(0.0, Geo.distanceKm(1, 1, 1, 1), 1e-9);
+    }
+
+    @Test
+    public void parsesRssAtomAndCapFeeds() throws Exception {
+        String rss = "<?xml version=\"1.0\"?><rss><channel><title>Feed</title>"
+                + "<item><title>Flood warning</title><description>River rising</description><pubDate>Mon, 1 Jan</pubDate></item>"
+                + "<item><title>Cyclone</title><description>Signal 4</description></item></channel></rss>";
+        java.util.List<AlertFeedParser.Item> a = AlertFeedParser.parse(rss);
+        assertEquals(2, a.size());                 // the channel <title> is not an alert
+        assertEquals("Flood warning", a.get(0).title);
+        assertEquals("River rising", a.get(0).description);
+        assertEquals("Mon, 1 Jan", a.get(0).date);
+
+        String atom = "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>x</title>"
+                + "<entry><title>Heat</title><summary>Stay inside</summary><updated>2026-10-01</updated></entry></feed>";
+        assertEquals("Stay inside", AlertFeedParser.parse(atom).get(0).description);
+
+        String cap = "<cap:alert xmlns:cap=\"urn:oasis:names:tc:emergency:cap:1.2\"><cap:info>"
+                + "<cap:headline>Landslide risk</cap:headline><cap:description>Hill areas</cap:description></cap:info></cap:alert>";
+        assertEquals("Landslide risk", AlertFeedParser.parse(cap).get(0).title);
+    }
+
+    @Test
+    public void rejectsBrokenXml() {
+        boolean failed = false;
+        try {
+            AlertFeedParser.parse("<rss><item><title>x</rss>");
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed);
     }
 }

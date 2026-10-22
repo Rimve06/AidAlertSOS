@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Incident;
@@ -37,7 +37,7 @@ import java.util.List;
  * Control center dashboard: live incident list and map, newest first. Also the entry point to
  * disaster check-ins, messaging, records, chat monitoring and the dispatch phone numbers.
  */
-public class CenterHomeActivity extends AppCompatActivity {
+public class CenterHomeActivity extends BaseActivity {
     private ActivityCenterHomeBinding b;
     private Prefs prefs;
     private final RowAdapter adapter = new RowAdapter();
@@ -160,6 +160,7 @@ public class CenterHomeActivity extends AppCompatActivity {
         }
         b.txtSummary.setText(active + " active  |  " + all.size() + " total incidents");
         b.txtSub.setText("Logged in as " + prefs.name() + "  |  " + NetUtil.describe(this)
+                + (NetUtil.localIp().isEmpty() ? "" : "  |  LAN socket " + NetUtil.localIp() + ":" + com.aidalert.sos.engine.LanServer.PORT)
                 + (prefs.centerPriv().isEmpty() ? "  |  no relay decryption key on this phone" : ""));
         adapter.submit(rows);
         b.mapAll.setDots(dots);
@@ -179,15 +180,22 @@ public class CenterHomeActivity extends AppCompatActivity {
         final EditText fire = num("Fire service", prefs.numFire());
         final EditText police = num("Police", prefs.numPolice());
         final EditText rescue = num("National rescue", prefs.numRescue());
+        final EditText feed = new EditText(this);
+        feed.setHint("XML alert feed URL (RSS / Atom / CAP)");
+        feed.setText(prefs.feedUrl());
+        feed.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
         box.addView(phone);
         box.addView(amb);
         box.addView(fire);
         box.addView(police);
         box.addView(rescue);
+        box.addView(feed);
         new AlertDialog.Builder(this).setTitle("Phone numbers").setView(box)
                 .setPositiveButton("Publish", (d, w) -> {
                     final String p = Ui.clean(phone.getText()), a = Ui.clean(amb.getText()), f = Ui.clean(fire.getText()),
                             po = Ui.clean(police.getText()), r = Ui.clean(rescue.getText());
+                    final String fu = Ui.clean(feed.getText());
+                    prefs.feedUrl(fu);
                     prefs.centerPhone(p);
                     prefs.numAmbulance(a);
                     prefs.numFire(f);
@@ -201,6 +209,7 @@ public class CenterHomeActivity extends AppCompatActivity {
                         ok &= rest.putString("config/center/fire", f);
                         ok &= rest.putString("config/center/police", po);
                         ok &= rest.putString("config/center/rescue", r);
+                        ok &= rest.putString("config/center/feedUrl", fu);
                         final boolean fin = ok;
                         AppExecutors.main(() -> Ui.toast(this, fin ? "Numbers published to all users" : "Failed (offline?)"));
                     });

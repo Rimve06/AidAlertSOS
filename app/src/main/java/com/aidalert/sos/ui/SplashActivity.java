@@ -3,7 +3,7 @@ package com.aidalert.sos.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.R;
 import com.aidalert.sos.data.Prefs;
@@ -12,7 +12,7 @@ import com.aidalert.sos.ui.center.CenterHomeActivity;
 import com.aidalert.sos.util.AppExecutors;
 
 /** Launcher: picks the first screen from the saved session (explicit Intents). */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
     private final Runnable go = this::route;
 
     @Override

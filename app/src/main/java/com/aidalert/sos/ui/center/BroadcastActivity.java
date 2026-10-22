@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivityBroadcastBinding;
@@ -18,7 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Control center -> all users (announcement) or -> one user (looked up by phone number). */
-public class BroadcastActivity extends AppCompatActivity {
+public class BroadcastActivity extends BaseActivity {
     private ActivityBroadcastBinding b;
     private Prefs prefs;
 

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Incident;
@@ -21,7 +21,7 @@ import java.util.List;
  * The user's own SOS history. Data is read through ContentResolver from the app's ContentProvider
  * (course topic) rather than by calling the database helper directly.
  */
-public class ReportsActivity extends AppCompatActivity {
+public class ReportsActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
 

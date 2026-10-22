@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Db;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Preselected emergency contacts: each one gets an SMS with type + map link when an SOS starts. */
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
 

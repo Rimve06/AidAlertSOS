@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +37,7 @@ import java.util.List;
  *   MODE_DM      user <-> user                   path dm/{thread}    (only while own SOS is active)
  * The control center can read forum and DM threads (MonitorActivity) - they are not private.
  */
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_TARGET_UID = "target_uid";
     public static final String EXTRA_TARGET_NAME = "target_name";

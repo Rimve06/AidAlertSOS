@@ -3,7 +3,7 @@ package com.aidalert.sos.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivitySettingsBinding;
@@ -13,7 +13,7 @@ import com.aidalert.sos.engine.SosGuardService;
 import com.aidalert.sos.engine.SyncManager;
 import com.aidalert.sos.util.AppExecutors;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private ActivitySettingsBinding b;
     private Prefs p;
 
@@ -30,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
         b.switchRelay.setChecked(p.relayOn());
         b.editCallNumber.setText(p.callNumberRaw());
         b.editServer.setText(p.dbUrl());
+        b.editLan.setText(p.lanHost());
         b.txtCenterInfo.setText("Control center phone: " + (p.centerPhone().isEmpty() ? "not synced yet" : "+" + p.centerPhone())
                 + "\nEncryption key for offline relay: " + (p.centerPub().isEmpty() ? "not synced yet" : "ready"));
 
@@ -48,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         p.relayOn(b.switchRelay.isChecked());
         p.callNumber(Ui.clean(b.editCallNumber.getText()));
         p.dbUrl(Ui.clean(b.editServer.getText()));
+        p.lanHost(Ui.clean(b.editLan.getText()));
         if (p.guardOn()) SosGuardService.start(this);
         else SosGuardService.stop(this);
         if (p.relayOn() && p.guardOn()) RelayManager.get(this).start();

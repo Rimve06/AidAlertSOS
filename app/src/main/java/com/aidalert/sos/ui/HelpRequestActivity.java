@@ -3,7 +3,7 @@ package com.aidalert.sos.ui;
 import android.location.Location;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.data.Incident;
 import com.aidalert.sos.data.Prefs;
@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 /** A volunteer helper's view of a nearby request. Position is shared only after "I can help". */
-public class HelpRequestActivity extends AppCompatActivity {
+public class HelpRequestActivity extends BaseActivity {
     public static final String EXTRA_ID = "req_id";
     public static final String EXTRA_TYPE = "req_type";
     public static final String EXTRA_LAT = "req_lat";

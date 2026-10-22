@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.aidalert.sos.ui.BaseActivity;
 
 import com.aidalert.sos.Config;
 import com.aidalert.sos.data.Prefs;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
  * Registration and login. Passwords are stored as salted PBKDF2 hashes and user ids are hashes of the
  * phone number, so the database never holds a readable phone number as a key.
  */
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends BaseActivity {
     private ActivityAuthBinding b;
     private Prefs prefs;
 
