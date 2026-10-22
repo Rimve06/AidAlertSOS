@@ -65,7 +65,7 @@ Internet -> **LAN socket** (same Wi-Fi / hotspot, no internet needed) -> SIM SMS
 | Polymorphism / interfaces | `DeliveryChannel` interface (the dispatcher loops over a `List<DeliveryChannel>`); listener interfaces in `HoldButtonView`, `MapView`, `RowAdapter`, `LocationHelper` |
 | Exception handling | custom checked `DeliveryException`; try/catch/finally; try-with-resources in `Http`, `LanServer`, `LanChannel`, `Db` |
 | Packages | `channel`, `data`, `engine`, `net`, `ui`, `ui.center`, `util`, `view` |
-| GUI, layouts | 20 XML layouts (LinearLayout, GridLayout, ScrollView, HorizontalScrollView, RadioGroup), Material buttons, view binding |
+| GUI, layouts | 18 XML layouts (LinearLayout, GridLayout, ScrollView, HorizontalScrollView, RadioGroup), Material buttons, view binding |
 | Custom view | `view/MapView` (draws dots, trail, tap detection), `view/HoldButtonView` (hold-to-confirm ring animation) |
 | Scalable UI, UX | dp/sp units, weights and `columnWeight`, scrolling screens; hold-to-confirm, confirmation dialogs, empty/locked states, permission checklist. (No separate tablet layouts.) |
 | Multithreading | `AppExecutors` (fixed + scheduled pools), plain `Thread` in `LanServer`, `synchronized` in `SosEngine`/`Db`/`RelayManager`, `ConcurrentHashMap`, `Handler` for the UI thread |
