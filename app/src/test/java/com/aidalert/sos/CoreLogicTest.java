@@ -1,0 +1,123 @@
+package com.aidalert.sos;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import com.aidalert.sos.engine.PowerTapDetector;
+import com.aidalert.sos.net.Crypto;
+import com.aidalert.sos.net.SmsProtocol;
+import com.aidalert.sos.util.Geo;
+
+import org.junit.Test;
+
+import java.nio.charset.StandardCharsets;
+
+/** Pure-Java logic tests (run on the PC, no emulator): power sequence rule, SMS format, crypto, distance. */
+public class CoreLogicTest {
+
+    @Test
+    public void fiveQuickPressesTrigger() {
+        PowerTapDetector d = new PowerTapDetector(5, 1500);
+        long t = 0;
+        for (int i = 0; i < 4; i++) assertFalse(d.onPowerPress(t += 400));
+        assertTrue(d.onPowerPress(t += 400));
+        assertEquals(0, d.getCount());
+    }
+
+    @Test
+    public void otherInputBetweenPressesResets() {
+        PowerTapDetector d = new PowerTapDetector(5, 1500);
+        d.onPowerPress(100);
+        d.onPowerPress(500);
+        d.onOtherInput();                      // user touched something after press 2
+        assertEquals(0, d.getCount());
+        assertFalse(d.onPowerPress(900));      // counting restarts at 1
+        assertFalse(d.onPowerPress(1300));
+        assertFalse(d.onPowerPress(1700));
+        assertFalse(d.onPowerPress(2100));
+        assertTrue(d.onPowerPress(2500));      // five NEW presses needed
+    }
+
+    @Test
+    public void longPauseResets() {
+        PowerTapDetector d = new PowerTapDetector(5, 1500);
+        for (int i = 0; i < 4; i++) d.onPowerPress(i * 300L);
+        assertFalse(d.onPowerPress(5000));     // gap too long: this is press 1 again
+        assertEquals(1, d.getCount());
+    }
+
+    @Test
+    public void sixPressesTriggerOnlyOnce() {
+        PowerTapDetector d = new PowerTapDetector(5, 1500);
+        int triggers = 0;
+        for (int i = 0; i < 6; i++) if (d.onPowerPress(i * 300L)) triggers++;
+        assertEquals(1, triggers);
+    }
+
+    @Test
+    public void smsRoundTrip() {
+        String s = SmsProtocol.encode("u1_123", "FIRE", 23.81234, 90.41256, 1_700_000_000_000L, "uid9", "Rahim|Uddin", "8801711000000");
+        SmsProtocol.Parsed p = SmsProtocol.decode(s);
+        assertNotNull(p);
+        assertEquals("u1_123", p.incidentId);
+        assertEquals("FIRE", p.type);
+        assertEquals(23.81234, p.lat, 1e-9);
+        assertEquals(90.41256, p.lon, 1e-9);
+        assertEquals(1_700_000_000_000L, p.timeMs);
+        assertEquals("Rahim Uddin", p.name);   // '|' is stripped from free text
+        assertEquals("8801711000000", p.phone);
+    }
+
+    @Test
+    public void smsWithoutFixAndGarbage() {
+        String s = SmsProtocol.encode("id", "MEDICAL", Double.NaN, Double.NaN, 5000, "u", "A", "1");
+        SmsProtocol.Parsed p = SmsProtocol.decode(s);
+        assertNotNull(p);
+        assertTrue(Double.isNaN(p.lat));
+        assertNull(SmsProtocol.decode("hello"));
+        assertNull(SmsProtocol.decode("AIDSOS|v1|only|two"));
+    }
+
+    @Test
+    public void phoneNormalisationAndUserId() {
+        assertEquals("8801711000000", Crypto.normalizePhone("01711-000000"));
+        assertEquals("8801711000000", Crypto.normalizePhone("+880 1711 000000"));
+        assertEquals(Crypto.userId("01711000000"), Crypto.userId("+8801711000000"));
+        assertEquals(20, Crypto.userId("01711000000").length());
+    }
+
+    @Test
+    public void passwordHashing() {
+        String salt = Crypto.newSalt();
+        String h = Crypto.hashPassword("secret1", salt);
+        assertTrue(Crypto.verifyPassword("secret1", salt, h));
+        assertFalse(Crypto.verifyPassword("secret2", salt, h));
+    }
+
+    @Test
+    public void hybridEncryptionOnlyCenterCanRead() {
+        String[] center = Crypto.generateKeyPair();
+        String[] stranger = Crypto.generateKeyPair();
+        byte[] msg = "{\"id\":\"x\",\"lat\":23.8}".getBytes(StandardCharsets.UTF_8);
+        String packet = Crypto.encrypt(center[0], msg);
+        assertEquals("{\"id\":\"x\",\"lat\":23.8}", new String(Crypto.decrypt(center[1], packet), StandardCharsets.UTF_8));
+        boolean failed = false;
+        try {
+            Crypto.decrypt(stranger[1], packet);
+        } catch (IllegalStateException e) {
+            failed = true;
+        }
+        assertTrue("a relaying phone must not be able to read the packet", failed);
+    }
+
+    @Test
+    public void distance() {
+        // Dhaka -> Chattogram is about 215-220 km in a straight line
+        double km = Geo.distanceKm(23.8103, 90.4125, 22.3569, 91.7832);
+        assertTrue(km > 205 && km < 230);
+        assertEquals(0.0, Geo.distanceKm(1, 1, 1, 1), 1e-9);
+    }
+}
