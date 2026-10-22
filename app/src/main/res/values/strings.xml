@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AidAlert SOS</string>
+    <string name="accessibility_description">AidAlert SOS uses this service ONLY to detect a 2-second hold of the volume-up or volume-down key (emergency triggers) and to cancel a half-finished power-button sequence. It does not read the screen, text you type, or any app content.</string>
+</resources>
