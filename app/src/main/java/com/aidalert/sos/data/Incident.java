@@ -14,7 +14,7 @@ import org.json.JSONObject;
  *              incidents/{id}/ops     (written by the control center: status, dispatch, notes)
  */
 public class Incident {
-    public static final String[] TYPES = {"MEDICAL", "ACCIDENT", "FIRE", "VIOLENCE", "OTHER", "UNSPECIFIED"};
+    public static final String[] TYPES = {"MEDICAL", "ACCIDENT", "FIRE", "VIOLENCE", "MENTAL_HEALTH", "OTHER", "UNSPECIFIED"};
     public static final String[] STATUSES = {"NEW", "ACKNOWLEDGED", "CONFIRMED", "DISPATCHED", "RESOLVED", "CANCELLED", "FALSE_ALARM"};
 
     public String id = "";
@@ -61,6 +61,7 @@ public class Incident {
             case "ACCIDENT": return "Accident";
             case "FIRE": return "Fire";
             case "VIOLENCE": return "Violence / crime";
+            case "MENTAL_HEALTH": return "Mental health crisis";
             case "OTHER": return "Other";
             default: return "Unspecified";
         }
@@ -73,6 +74,7 @@ public class Incident {
             case "ACCIDENT": return 0xFFEF6C00;
             case "FIRE": return 0xFFE65100;
             case "VIOLENCE": return 0xFF6A1B9A;
+            case "MENTAL_HEALTH": return 0xFF00838F;
             case "OTHER": return 0xFF1565C0;
             default: return 0xFFC62828;
         }

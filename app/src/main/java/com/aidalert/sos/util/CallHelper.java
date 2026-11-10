@@ -1,10 +1,14 @@
 package com.aidalert.sos.util;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telecom.TelecomManager;
+
+import androidx.core.app.ActivityCompat;
 
 /** Phone calls. place() starts a call at once (needs CALL_PHONE); dial() only opens the dialer. */
 public final class CallHelper {
@@ -17,6 +21,9 @@ public final class CallHelper {
         try {
             TelecomManager tm = (TelecomManager) c.getSystemService(Context.TELECOM_SERVICE);
             if (tm != null) {
+                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
                 tm.placeCall(uri, new Bundle());
                 return true;
             }

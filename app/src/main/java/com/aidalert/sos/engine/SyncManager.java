@@ -70,7 +70,7 @@ public final class SyncManager {
         if (!phone.isEmpty()) p.centerPhone(phone);
         if (cfg.has("feedUrl")) p.feedUrl(cfg.optString("feedUrl", ""));
         if (cfg.has("ambulance")) p.numAmbulance(cfg.optString("ambulance", "999"));
-        if (cfg.has("fire")) p.numFire(cfg.optString("fire", "199"));
+        if (cfg.has("fire")) p.numFire(cfg.optString("fire", "102"));
         if (cfg.has("police")) p.numPolice(cfg.optString("police", "999"));
         if (cfg.has("rescue")) p.numRescue(cfg.optString("rescue", "999"));
     }
@@ -143,6 +143,9 @@ public final class SyncManager {
                 r.description = o.optString("description", "");
                 r.lastSeen = o.optString("lastSeen", "");
                 r.ts = o.optLong("ts", 0);
+                r.authority = o.optString("authority", "");
+                r.ref = o.optString("ref", "");
+                r.sourceUrl = o.optString("sourceUrl", "");
                 list.add(r);
                 if (r.ts > newest) {
                     newest = r.ts;
@@ -154,7 +157,7 @@ public final class SyncManager {
         if (newest > p.lastRecordTs()) {
             if (p.lastRecordTs() != 0 && newName != null) {
                 Notifier.show(app, Notifier.ID_RECORD, Notifier.CH_ALERT, "New alert on the records list", newName,
-                        new Intent(app, RecordsActivity.class));
+                        new Intent(app, RecordsActivity.class).putExtra(RecordsActivity.EXTRA_KIND, newName.startsWith("WANTED") ? "WANTED" : "MISSING"));
             }
             p.lastRecordTs(newest);
         }

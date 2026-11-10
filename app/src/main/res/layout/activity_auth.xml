@@ -1,139 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="@color/primary">
 
-    <LinearLayout
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_home" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="AidAlert SOS"
-            android:textColor="@color/primary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/txtSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="Sign in to continue"
-            android:textColor="@color/text_muted" />
-
-        <TextView
-            style="@style/AidSection"
-            android:text="SERVER (Firebase Realtime Database URL)" />
-
-        <EditText
-            android:id="@+id/editServer"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="https://your-project-default-rtdb.firebaseio.com"
-            android:importantForAutofill="no"
-            android:inputType="textUri" />
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editToken"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Database secret / token (optional)"
-            android:importantForAutofill="no"
-            android:inputType="textPassword" />
-
-        <TextView
-            style="@style/AidSection"
-            android:text="ACCOUNT" />
-
-        <RadioGroup
-            android:id="@+id/radioRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/radioCitizen"
-                android:layout_width="0dp"
+            <include
+                layout="@layout/include_brand"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Citizen" />
+                android:layout_marginTop="40dp" />
 
-            <RadioButton
-                android:id="@+id/radioCenter"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txtSubtitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Control center" />
-        </RadioGroup>
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Be Safe. Stay Connected."
+                android:textColor="#FFFFFFFF"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6"
+                android:shadowDy="2" />
 
-        <EditText
-            android:id="@+id/editName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Full name (registration only)"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_sheet_white"
+                android:minHeight="480dp"
+                android:orientation="vertical"
+                android:padding="22dp">
 
-        <EditText
-            android:id="@+id/editPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone number"
-            android:importantForAutofill="no"
-            android:inputType="phone" />
+                <!-- LOGIN SECTION -->
+                <LinearLayout
+                    android:id="@+id/secLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password (min 6 characters)"
-            android:importantForAutofill="no"
-            android:inputType="textPassword" />
+                    <TextView style="@style/AidSection" android:text="LOG IN" />
 
-        <EditText
-            android:id="@+id/editCenterCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Control center access code"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:visibility="gone" />
+                    <RadioGroup
+                        android:id="@+id/radioRole"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <RadioButton android:id="@+id/radioCitizen" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:checked="true" android:text="Citizen" />
+                        <RadioButton android:id="@+id/radioCenter" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Control center" />
+                    </RadioGroup>
 
-        <TextView
-            android:id="@+id/txtStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/primary" />
+                    <EditText
+                        android:id="@+id/editLoginEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email"
+                        android:importantForAutofill="no"
+                        android:inputType="textEmailAddress" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Log in" />
+                    <EditText
+                        android:id="@+id/editLoginPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Create account" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Log in" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Your phone number is never stored in readable form as an id, and your location is only collected when you trigger an SOS or choose to share it."
-            android:textColor="@color/text_muted"
-            android:textSize="12sp" />
-    </LinearLayout>
-</ScrollView>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGoogleLogin"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sign in with Google" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGithubLogin"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sign in with GitHub" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnForgot"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Forgot password" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnShowRegister"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Create a new account" />
+                </LinearLayout>
+
+                <!-- REGISTER SECTION -->
+                <LinearLayout
+                    android:id="@+id/secRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView style="@style/AidSection" android:text="CREATE ACCOUNT" />
+
+                    <EditText
+                        android:id="@+id/editRegName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Full name"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName" />
+
+                    <EditText
+                        android:id="@+id/editRegEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email address"
+                        android:importantForAutofill="no"
+                        android:inputType="textEmailAddress" />
+
+                    <EditText
+                        android:id="@+id/editRegPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password (8+ chars)"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword" />
+
+                    <EditText
+                        android:id="@+id/editRegPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Mobile number (Mandatory, e.g. 01712345678)"
+                        android:importantForAutofill="no"
+                        android:inputType="phone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Create Account" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGoogleRegister"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sign up with Google" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGithubRegister"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sign up with GitHub" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBackLogin"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="I already have an account" />
+                </LinearLayout>
+
+                <!-- SOCIAL LOGIN PHONE PROMPT SECTION -->
+                <LinearLayout
+                    android:id="@+id/secSocialPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView style="@style/AidSection" android:text="NAME &amp; MOBILE NUMBER" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Please provide your name and mobile number to complete your account setup."
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+
+                    <EditText
+                        android:id="@+id/editSocialName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:hint="Full name"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName" />
+
+                    <EditText
+                        android:id="@+id/editSocialPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:hint="Mobile number, e.g. 01712345678"
+                        android:importantForAutofill="no"
+                        android:inputType="phone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmitSocialPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Complete Sign Up" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBackFromSocialPhone"
+                        style="@style/AidButtonOutlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Back to log in" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/primary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDirectory"
+                    style="@style/AidButtonOutlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Emergency numbers and nearby help (no login)" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Your location is only collected when you trigger an SOS or choose to share it. Passwords are handled by Firebase Authentication and are never stored by this app."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

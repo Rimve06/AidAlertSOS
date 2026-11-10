@@ -2,7 +2,7 @@ package com.aidalert.sos.data;
 
 import org.json.JSONObject;
 
-/** One chat message (center chat, community forum or direct message). */
+/** One chat message (center chat or direct message). */
 public class Msg {
     public String key = "";
     public String from = "";   // CENTER or USER (center chat), otherwise empty

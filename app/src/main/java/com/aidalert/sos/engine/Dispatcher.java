@@ -83,10 +83,16 @@ public final class Dispatcher {
         if (!NetUtil.isOnline(app)) return;
         Db db = Db.get(app);
         FirebaseRest rest = new FirebaseRest(app);
+        Prefs prefs = Prefs.of(app);
+        String problem = "";
         for (Incident i : db.unsyncedMine()) {
             i.via = "INTERNET";
-            if (rest.put("incidents/" + i.id + "/report", i.toReportJson())) db.setSynced(i.id, true);
+            FirebaseRest.Result r = rest.request("PUT", "incidents/" + i.id + "/report", null, i.toReportJson().toString());
+            if (r.ok()) db.setSynced(i.id, true);
+            else problem = com.aidalert.sos.blood.AccessInfo.explain("Sending your alert", r.code, r.body, rest.configured(),
+                    com.aidalert.sos.blood.AccessInfo.fromToken(com.aidalert.sos.auth.AuthManager.idToken(false)));
         }
+        prefs.syncError(problem);
         flushRelay(app);
     }
 
@@ -112,6 +118,12 @@ public final class Dispatcher {
     /** SMS with type and map link to every preselected emergency contact. */
     public static void notifyContacts(Context app, Incident i) {
         String where = i.hasFix() ? Geo.mapsLink(i.lat, i.lon) : "location not available yet";
+        if ("MENTAL_HEALTH".equals(i.type)) {
+            String t = i.userName + " may be having a very hard time and needs someone to check on them now. "
+                    + "Please call or go to them. Location: " + where + " - sent by AidAlert SOS";
+            for (Db.Contact c : Db.get(app).contacts()) SmsHelper.send(app, c.phone, t);
+            return;
+        }
         String text = "EMERGENCY! " + i.userName + " needs help (" + Incident.label(i.type) + "). Location: "
                 + where + " - sent by AidAlert SOS";
         for (Db.Contact c : Db.get(app).contacts()) {

@@ -1,141 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
-
-    <TextView
-        android:id="@+id/txtSummary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txtSub"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_muted"
-        android:textSize="12sp" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDisaster"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Disaster" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBroadcast"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Messages" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnRecords"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Records" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMonitor"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Monitor chats" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCenterSettings"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Numbers" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnExport"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Report CSV" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLogout"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log out" />
-        </LinearLayout>
-    </HorizontalScrollView>
+    android:background="@drawable/bg"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnShowActive"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/txtSub"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1"
-            android:text="Active" />
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnShowAll"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/txtAlert"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1"
-            android:text="All records" />
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_alert_red"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnToggleMap"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_weight="1"
-            android:text="Map" />
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <LinearLayout style="@style/AidKpi">
+                <TextView android:id="@+id/kpiActive" style="@style/AidKpiValue" android:text="0" />
+                <TextView style="@style/AidKpiLabel" android:text="Active SOS" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/AidKpi">
+                <TextView android:id="@+id/kpiAwaiting" style="@style/AidKpiValue" android:text="0" />
+                <TextView style="@style/AidKpiLabel" android:text="Awaiting response" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/AidKpi">
+                <TextView android:id="@+id/kpiDispatched" style="@style/AidKpiValue" android:text="0" />
+                <TextView style="@style/AidKpiLabel" android:text="Dispatched" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/AidKpi">
+                <TextView android:id="@+id/kpiTotal" style="@style/AidKpiValue" android:text="0" />
+                <TextView style="@style/AidKpiLabel" android:text="All incidents" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView style="@style/AidSection" android:text="NEEDS ATTENTION NOW" />
+
+        <TextView
+            android:id="@+id/txtEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:gravity="center"
+            android:padding="18dp"
+            android:text="No active SOS. All clear."
+            android:textColor="@color/text_muted" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+        <TextView style="@style/AidSection" android:text="OPERATIONS" />
+        <LinearLayout android:id="@+id/secOps" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+
+        <TextView style="@style/AidSection" android:text="COMMUNICATION" />
+        <LinearLayout android:id="@+id/secComm" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+
+        <TextView style="@style/AidSection" android:text="COMMUNITY" />
+        <LinearLayout android:id="@+id/secCommunity" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+
+        <TextView style="@style/AidSection" android:text="ANALYTICS AND SAFETY" />
+        <LinearLayout android:id="@+id/secAnalytics" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+
+        <TextView style="@style/AidSection" android:text="ADMINISTRATION" />
+        <LinearLayout android:id="@+id/secAdmin" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
     </LinearLayout>
-
-    <com.aidalert.sos.view.MapView
-        android:id="@+id/mapAll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="6dp"
-        android:layout_weight="1"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/txtEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="24dp"
-        android:text="No incidents."
-        android:textColor="@color/text_muted"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="6dp"
-        android:layout_weight="1" />
-</LinearLayout>
+</ScrollView>

@@ -8,3 +8,12 @@
 .externalNativeBuild/
 .cxx/
 app/build/
+
+# Firebase client config and any credentials must not be committed
+app/google-services.json
+GoogleService-Info.plist
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+*.jks
+*.keystore
+local.properties

@@ -1,39 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg"
         android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
             style="@style/AidSection"
-            android:text="TRIGGERS" />
+            android:text="App preferences" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchGuard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guard on (power x5 and volume holds)" />
+        <LinearLayout style="@style/AidGroup">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchAutoCall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Call automatically on SOS" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchGuard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guard on (power x5 and volume holds)" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchRelay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Offline relay: carry encrypted alerts for other phones" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchAutoCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Call automatically on SOS" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchRelay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Offline relay: carry encrypted alerts for other phones" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchMissing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notify me about new missing-person reports near me" />
+
+            <TextView
+                android:id="@+id/txtMissingHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="6dp"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
         <TextView
             style="@style/AidSection"
-            android:text="NUMBER TO CALL ON SOS (empty = control center, then 999)" />
+            android:text="Number to call on SOS (empty = control center, then 999)" />
 
         <EditText
             android:id="@+id/editCallNumber"
@@ -45,7 +64,7 @@
 
         <TextView
             style="@style/AidSection"
-            android:text="SERVER" />
+            android:text="Server" />
 
         <EditText
             android:id="@+id/editServer"
@@ -80,23 +99,52 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPerms"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/AidButtonOutlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Permissions checklist" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSync"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/btnTestKeys"
+            style="@style/AidButtonOutlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Test volume keys" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnServerCheck"
+            style="@style/AidButtonOutlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Server check (why is upload refused?)" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSync"
+            style="@style/AidButtonOutlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Sync now" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/sos_red"
             android:text="Log out" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteAccount"
+            style="@style/AidButtonOutlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Delete account"
+            android:textColor="@color/sos_red"
+            app:strokeColor="@color/sos_red" />
     </LinearLayout>
 </ScrollView>

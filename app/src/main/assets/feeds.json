@@ -1,0 +1,187 @@
+{
+ "note": "Public RSS feeds. Google News RSS is a keyless public feed; URLs here are editable. A feed that fails is skipped and never hides the others.",
+ "alerts": [
+  {
+   "name": "Google News: cyclone and storm warnings",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+cyclone+OR+storm+OR+%22warning+signal%22+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "CYCLONE_FLOOD"
+  },
+  {
+   "name": "Google News: flood, landslide, heavy rain",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+flood+OR+landslide+OR+%22heavy+rain%22+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "CYCLONE_FLOOD"
+  },
+  {
+   "name": "Google News: earthquake",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+earthquake+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "EARTHQUAKE"
+  },
+  {
+   "name": "Google News: disease outbreak and health alert",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+dengue+OR+outbreak+OR+pandemic+OR+%22health+alert%22+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "OTHER"
+  },
+  {
+   "name": "Google News: law enforcement and public safety",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+police+OR+RAB+OR+%22law+and+order%22+OR+curfew+when:3d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "SAFETY_NEWS"
+  },
+  {
+   "name": "Google News: Section 144 and curfew",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+%22section+144%22+OR+curfew+OR+hartal+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "LAW_ORDER"
+  },
+  {
+   "name": "Google News: police advisories and road closures",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+police+%22avoid+unnecessary+movement%22+OR+%22road+blocked%22+OR+%22traffic+diversion%22+OR+%22advises+residents%22+when:7d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "LAW_ORDER"
+  },
+  {
+   "name": "Google News: clashes and unrest",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+clash+OR+riot+OR+unrest+OR+%22law+and+order%22+when:3d&hl=en-BD&gl=BD&ceid=BD:en",
+   "kind": "LAW_ORDER"
+  },
+  {
+   "name": "Google News: world disasters",
+   "url": "https://news.google.com/rss/search?q=earthquake+OR+tsunami+OR+hurricane+OR+typhoon+OR+%22severe+flooding%22+OR+volcano+when:2d&hl=en&gl=US&ceid=US:en",
+   "kind": "WORLD_DISASTER"
+  }
+ ],
+ "news": [
+  {
+   "name": "Google News: Bangladesh emergencies and safety",
+   "url": "https://news.google.com/rss/search?q=Bangladesh+(cyclone+OR+flood+OR+fire+OR+accident+OR+murder+OR+rescue+OR+dengue+OR+earthquake)+when:2d&hl=en-BD&gl=BD&ceid=BD:en"
+  },
+  {
+   "name": "Google News: Bangladesh top stories",
+   "url": "https://news.google.com/rss?hl=en-BD&gl=BD&ceid=BD:en"
+  },
+  {
+   "name": "Google News: Bangladesh (Bangla)",
+   "url": "https://news.google.com/rss?hl=bn&gl=BD&ceid=BD:bn"
+  },
+  {
+   "name": "Google News: world disasters",
+   "url": "https://news.google.com/rss/search?q=earthquake+OR+cyclone+OR+hurricane+OR+tsunami+OR+flood+OR+wildfire+when:1d&hl=en&gl=US&ceid=US:en"
+  },
+  {
+   "name": "Google News: world",
+   "url": "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en&gl=US&ceid=US:en"
+  }
+ ],
+ "pages": [
+  {
+   "name": "DDM AWARE: weather, flood, cyclone and lightning alerts",
+   "url": "https://rapid.ddm.gov.bd/home/weather"
+  },
+  {
+   "name": "DDM incident reports (district, severity, deaths)",
+   "url": "https://rapid.ddm.gov.bd/incidents/list"
+  },
+  {
+   "name": "BMD INSTANT warning dashboard",
+   "url": "https://instant.bmd.gov.bd/Dashboard/"
+  },
+  {
+   "name": "BMD official bulletins",
+   "url": "https://www.bmd.gov.bd/"
+  },
+  {
+   "name": "FFWC flood forecasts and river levels",
+   "url": "http://www.ffwc.gov.bd/"
+  },
+  {
+   "name": "FFWC API (needs registration)",
+   "url": "https://api.ffwc.gov.bd/"
+  },
+  {
+   "name": "Department of Disaster Management",
+   "url": "https://ddm.gov.bd/"
+  },
+  {
+   "name": "Bangladesh Police and 999",
+   "url": "https://www.police.gov.bd/"
+  },
+  {
+   "name": "GDACS global disaster alerts",
+   "url": "https://www.gdacs.org/"
+  },
+  {
+   "name": "ReliefWeb Bangladesh",
+   "url": "https://reliefweb.int/country/bgd"
+  },
+  {
+   "name": "Bangladesh Police notices",
+   "url": "https://www.police.gov.bd/en/notice",
+   "kind": "OFFICIAL"
+  },
+  {
+   "name": "Ministry of Home Affairs notices",
+   "url": "https://moha.gov.bd/pages/notices",
+   "kind": "OFFICIAL"
+  },
+  {
+   "name": "Khulna Metropolitan Police / Khulna range",
+   "url": "https://police.khulnadiv.gov.bd/",
+   "kind": "OFFICIAL"
+  },
+  {
+   "name": "Dhaka Metropolitan Police",
+   "url": "https://dmp.gov.bd/",
+   "kind": "OFFICIAL"
+  },
+  {
+   "name": "Khulna District Administration",
+   "url": "https://khulna.gov.bd/",
+   "kind": "OFFICIAL"
+  }
+ ],
+ "missing": [
+  {
+   "name": "MUN Alert: active missing cases",
+   "url": "https://munalert.org/active-cases"
+  },
+  {
+   "name": "NIKHOJ: missing persons",
+   "url": "https://nikhoj.com/"
+  }
+ ],
+  "missingNews": [
+    {
+      "name": "Google News: missing persons in Bangladesh",
+      "url": "https://news.google.com/rss/search?q=%E0%A6%A8%E0%A6%BF%E0%A6%96%E0%A7%8B%E0%A6%81%E0%A6%9C+OR+%22missing+person%22+Bangladesh+when:2d&hl=bn&gl=BD&ceid=BD:bn"
+    }
+  ],
+ "wanted": [
+  {
+   "name": "Bangladesh Police: wanted persons",
+   "url": "https://www.police.gov.bd/en/wanted_person"
+  },
+  {
+   "name": "INTERPOL Red Notices (international)",
+   "url": "https://www.interpol.int/en/How-we-work/Notices/Red-Notices/View-Red-Notices"
+  }
+ ],
+ "blood": [
+  {
+   "name": "RoktoData",
+   "url": "https://www.roktodata.org/"
+  },
+  {
+   "name": "BMHBD",
+   "url": "https://www.bmhbd.org/"
+  },
+  {
+   "name": "Blood Donor Force of Bangladesh",
+   "url": "https://bdfb.info/"
+  },
+  {
+   "name": "IOM Blood Directory",
+   "url": "https://iom.edu.bd/ibd/"
+  },
+  {
+   "name": "Bloodman",
+   "url": "https://bloodman.org/"
+  }
+ ]
+}

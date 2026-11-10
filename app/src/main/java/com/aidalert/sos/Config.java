@@ -4,8 +4,8 @@ package com.aidalert.sos;
 public final class Config {
     private Config() {}
 
-    /** Registration code a control-center operator must enter (demo-level protection). */
-    public static final String CENTER_CODE = "AIDCENTER-2026";
+    /** Public Realtime Database URL (not a secret). Access is controlled by auth + database.rules.json. */
+    public static final String DB_URL = "https://aid-alert-18ac6-default-rtdb.firebaseio.com";
 
     /** Power button: number of presses, and the largest pause allowed between two presses. */
     public static final int REQUIRED_TAPS = 5;

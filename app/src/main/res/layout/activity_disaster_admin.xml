@@ -45,7 +45,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEnd"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AidButtonOutlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -54,7 +54,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRefresh"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AidButtonOutlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -63,7 +63,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnExport"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AidButtonOutlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"

@@ -1,6 +1,9 @@
 package com.aidalert.sos.engine;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Context;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
@@ -18,22 +21,65 @@ import com.aidalert.sos.Config;
  */
 public class KeyAccessibilityService extends AccessibilityService {
 
+    // Diagnostics for Settings > "Test volume keys": proves the service is connected and receiving keys.
+    private static volatile boolean connected;
+    private static volatile String lastKey = "none yet";
+    private static volatile long lastKeyAt;
+    private static volatile String lastResult = "";
+
+    public static boolean isConnected() { return connected; }
+    public static String lastKey() { return lastKey; }
+    public static long lastKeyAt() { return lastKeyAt; }
+    public static String lastResult() { return lastResult; }
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private int heldKey = -1;
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        connected = true;
+    }
+
+    @Override
+    public boolean onUnbind(android.content.Intent intent) {
+        connected = false;
+        return super.onUnbind(intent);
+    }
+
+    /** Short buzz so the user knows the 2-second hold was accepted (skipped in silent mode). */
+    private void buzz() {
+        try {
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (v != null) v.vibrate(VibrationEffect.createOneShot(250, VibrationEffect.DEFAULT_AMPLITUDE));
+        } catch (RuntimeException ignored) {
+            // no vibrator
+        }
+    }
 
     private final Runnable fire = new Runnable() {
         @Override
         public void run() {
             int k = heldKey;
             heldKey = -1;
-            if (k == KeyEvent.KEYCODE_VOLUME_UP) SosEngine.get(getApplicationContext()).onVolumeHold(true);
-            else if (k == KeyEvent.KEYCODE_VOLUME_DOWN) SosEngine.get(getApplicationContext()).onVolumeHold(false);
+            if (k == KeyEvent.KEYCODE_VOLUME_UP) {
+                lastResult = "Volume Up held 2 s: " + (SosEngine.get(getApplicationContext()).canTrigger()
+                        ? "SOS started" : "ignored (log in as a citizen and keep 'Power-button guard' on)");
+                buzz();
+                SosEngine.get(getApplicationContext()).onVolumeHold(true);
+            } else if (k == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                lastResult = "Volume Down held 2 s: " + (SosEngine.get(getApplicationContext()).canTrigger()
+                        ? "silent SOS started" : "ignored (log in as a citizen and keep 'Power-button guard' on)");
+                SosEngine.get(getApplicationContext()).onVolumeHold(false); // silent: no buzz
+            }
         }
     };
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
         int code = event.getKeyCode();
+        lastKey = KeyEvent.keyCodeToString(code) + (event.getAction() == KeyEvent.ACTION_DOWN ? " down" : " up");
+        lastKeyAt = System.currentTimeMillis();
         boolean volume = code == KeyEvent.KEYCODE_VOLUME_UP || code == KeyEvent.KEYCODE_VOLUME_DOWN;
         if (!volume) {
             SosEngine.get(getApplicationContext()).onOtherInput();

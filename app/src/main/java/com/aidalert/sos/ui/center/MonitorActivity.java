@@ -7,6 +7,7 @@ import android.view.View;
 import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.aidalert.sos.community.CommunityActivity;
 import com.aidalert.sos.databinding.ActivityListBinding;
 import com.aidalert.sos.net.FirebaseRest;
 import com.aidalert.sos.ui.ChatActivity;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** Chat monitoring: the community forum and every user-to-user thread, read only. */
+/** Chat monitoring: every user-to-user thread, read only. */
 public class MonitorActivity extends BaseActivity {
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
@@ -31,12 +32,10 @@ public class MonitorActivity extends BaseActivity {
         setContentView(b.getRoot());
         setTitle("Monitor chats");
         b.txtInfo.setVisibility(View.VISIBLE);
-        b.txtInfo.setText("Community and user-to-user chats are open only during an SOS and are monitored for misuse.");
+        b.txtInfo.setText("User-to-user chats are open only during an SOS and are monitored for misuse. The community board is purpose-only and moderated.");
         b.btnAdd.setVisibility(View.VISIBLE);
-        b.btnAdd.setText("Open community forum");
-        b.btnAdd.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)
-                .putExtra(ChatActivity.EXTRA_MODE, ChatActivity.MODE_FORUM)
-                .putExtra(ChatActivity.EXTRA_READONLY, true)));
+        b.btnAdd.setText("Open community board (moderate, feedback, reports)");
+        b.btnAdd.setOnClickListener(v -> startActivity(new Intent(this, CommunityActivity.class)));
         b.list.setLayoutManager(new LinearLayoutManager(this));
         b.list.setAdapter(adapter);
         adapter.setOnClick(r -> startActivity(new Intent(this, ChatActivity.class)

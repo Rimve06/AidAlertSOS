@@ -6,80 +6,137 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_home"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <FrameLayout
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/txtAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_avatar"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Profile picture"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+        </FrameLayout>
+
         <TextView
-            android:id="@+id/txtName"
+            android:id="@+id/btnPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"
+            android:text="Change photo (tap) - long-press to remove"
+            android:textColor="@color/primary"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:hint="Full name"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName" />
 
         <TextView
             android:id="@+id/txtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_muted" />
+            android:gravity="center"
+            android:textColor="@color/blue" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Stay Safe Always"
+            android:textColor="@color/primary"
+            android:textSize="13sp" />
 
         <TextView
             style="@style/AidSection"
-            android:text="PUBLIC PROFILE" />
+            android:text="Public profile" />
 
-        <EditText
-            android:id="@+id/editArea"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Area / city"
-            android:importantForAutofill="no"
-            android:inputType="textCapWords" />
+        <LinearLayout style="@style/AidGroup">
 
-        <EditText
-            android:id="@+id/editBio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Short bio"
-            android:importantForAutofill="no"
-            android:inputType="textCapSentences|textMultiLine" />
+            <EditText
+                android:id="@+id/editArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Area / city"
+                android:importantForAutofill="no"
+                android:inputType="textCapWords" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchSearchable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Let other users find my profile" />
+            <EditText
+                android:id="@+id/editBio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Short bio"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchShowPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show my phone number on my profile" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchSearchable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Let other users find my profile" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchShowPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show my phone number on my profile" />
+
+        </LinearLayout>
 
         <TextView
             style="@style/AidSection"
-            android:text="MEDICAL (shared with responders only)" />
+            android:text="Medical (shared with responders only)" />
 
-        <EditText
-            android:id="@+id/editBlood"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Blood group (e.g. B+)"
-            android:importantForAutofill="no"
-            android:inputType="textCapCharacters" />
+        <LinearLayout style="@style/AidGroup">
 
-        <EditText
-            android:id="@+id/editMedical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Allergies, conditions, medicines"
-            android:importantForAutofill="no"
-            android:inputType="textCapSentences|textMultiLine" />
+            <EditText
+                android:id="@+id/editBlood"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Blood group (e.g. B+)"
+                android:importantForAutofill="no"
+                android:inputType="textCapCharacters" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchMedical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Attach medical info to my SOS" />
+            <EditText
+                android:id="@+id/editMedical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Allergies, conditions, medicines"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchMedical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Attach medical info to my SOS" />
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"

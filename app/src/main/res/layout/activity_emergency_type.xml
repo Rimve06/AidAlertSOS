@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFEBEE">
+    android:background="@drawable/bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:columnCount="2">
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/btnMedical"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -42,10 +42,9 @@
                 android:layout_margin="4dp"
                 android:text="Medical"
                 android:textSize="17sp"
-                app:backgroundTint="#D81B60"
-                xmlns:app="http://schemas.android.com/apk/res-auto" />
+                app:backgroundTint="#D81B60" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/btnAccident"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -53,10 +52,9 @@
                 android:layout_margin="4dp"
                 android:text="Accident"
                 android:textSize="17sp"
-                app:backgroundTint="#EF6C00"
-                xmlns:app="http://schemas.android.com/apk/res-auto" />
+                app:backgroundTint="#EF6C00" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/btnFire"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -64,10 +62,9 @@
                 android:layout_margin="4dp"
                 android:text="Fire"
                 android:textSize="17sp"
-                app:backgroundTint="#E65100"
-                xmlns:app="http://schemas.android.com/apk/res-auto" />
+                app:backgroundTint="#E65100" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/btnViolence"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -75,10 +72,9 @@
                 android:layout_margin="4dp"
                 android:text="Violence / crime"
                 android:textSize="17sp"
-                app:backgroundTint="#6A1B9A"
-                xmlns:app="http://schemas.android.com/apk/res-auto" />
+                app:backgroundTint="#6A1B9A" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.button.MaterialButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/btnOther"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
@@ -87,8 +83,7 @@
                 android:layout_margin="4dp"
                 android:text="Other"
                 android:textSize="17sp"
-                app:backgroundTint="#1565C0"
-                xmlns:app="http://schemas.android.com/apk/res-auto" />
+                app:backgroundTint="#1565C0" />
         </GridLayout>
 
         <EditText
@@ -131,7 +126,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCallNow"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AidButtonOutlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -140,7 +135,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/AidButtonOutlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"

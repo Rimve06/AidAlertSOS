@@ -9,6 +9,7 @@ import com.aidalert.sos.ui.BaseActivity;
 import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivityBroadcastBinding;
 import com.aidalert.sos.net.Crypto;
+import com.aidalert.sos.net.UserLookup;
 import com.aidalert.sos.net.FirebaseRest;
 import com.aidalert.sos.ui.ChatActivity;
 import com.aidalert.sos.ui.Ui;
@@ -42,10 +43,19 @@ public class BroadcastActivity extends BaseActivity {
                 Ui.toast(this, "Enter the user's phone number");
                 return;
             }
-            startActivity(new Intent(this, ChatActivity.class)
-                    .putExtra(ChatActivity.EXTRA_MODE, ChatActivity.MODE_CENTER)
-                    .putExtra(ChatActivity.EXTRA_TARGET_UID, Crypto.userId(phone))
-                    .putExtra(ChatActivity.EXTRA_TARGET_NAME, "+" + Crypto.normalizePhone(phone)));
+            AppExecutors.io(() -> {
+                String uid = UserLookup.uidForPhone(new FirebaseRest(this), phone);
+                AppExecutors.main(() -> {
+                    if (uid == null) {
+                        b.txtResult.setText("No registered user with that number.");
+                        return;
+                    }
+                    startActivity(new Intent(this, ChatActivity.class)
+                            .putExtra(ChatActivity.EXTRA_MODE, ChatActivity.MODE_CENTER)
+                            .putExtra(ChatActivity.EXTRA_TARGET_UID, uid)
+                            .putExtra(ChatActivity.EXTRA_TARGET_NAME, "+" + Crypto.normalizePhone(phone)));
+                });
+            });
         });
     }
 
@@ -76,9 +86,9 @@ public class BroadcastActivity extends BaseActivity {
             FirebaseRest rest = new FirebaseRest(this);
             String key;
             if (one) {
-                String uid = Crypto.userId(phone);
+                String uid = UserLookup.uidForPhone(rest, phone);
                 // Make sure the user exists so messages are not written into the void.
-                if (rest.getObj("users/" + uid) == null) {
+                if (uid == null) {
                     AppExecutors.main(() -> {
                         b.btnSend.setEnabled(true);
                         b.txtResult.setText("No registered user with that number.");

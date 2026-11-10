@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "updated": "",
+  "source": "none yet",
+  "note": "Empty on purpose: facility names, locations and phone numbers are never invented. Generate this file with tools/OsmImport.java (OpenStreetMap, ODbL) or load an official list, then rebuild.",
+  "facilities": []
+}

@@ -33,9 +33,8 @@ import java.util.List;
 /**
  * One screen for every conversation (RecyclerView with a custom bubble item):
  *   MODE_CENTER  citizen <-> control center      path msgs/{uid}     (center: EXTRA_TARGET_UID)
- *   MODE_FORUM   community forum                 path forum          (only while own SOS is active)
  *   MODE_DM      user <-> user                   path dm/{thread}    (only while own SOS is active)
- * The control center can read forum and DM threads (MonitorActivity) - they are not private.
+ * The control center can read DM threads (MonitorActivity) - they are not private.
  */
 public class ChatActivity extends BaseActivity {
     public static final String EXTRA_MODE = "mode";
@@ -47,7 +46,6 @@ public class ChatActivity extends BaseActivity {
     public static final String EXTRA_READONLY = "readonly";
 
     public static final int MODE_CENTER = 1;
-    public static final int MODE_FORUM = 2;
     public static final int MODE_DM = 3;
 
     private ActivityChatBinding b;
@@ -81,11 +79,6 @@ public class ChatActivity extends BaseActivity {
 
         String notice;
         switch (mode) {
-            case MODE_FORUM:
-                path = "forum";
-                setTitle("Community");
-                notice = "Open to users with an active SOS. Messages are visible to the control center.";
-                break;
             case MODE_DM:
                 peerUid = getIntent().getStringExtra(EXTRA_PEER_UID);
                 peerName = getIntent().getStringExtra(EXTRA_PEER_NAME);

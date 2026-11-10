@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Db extends SQLiteOpenHelper {
     private static final String NAME = "aidalert.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 3;
     private static Db instance;
 
     public static synchronized Db get(Context c) {
@@ -36,18 +36,33 @@ public class Db extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE contact (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, "
                 + "is_primary INTEGER DEFAULT 0)");
         db.execSQL("CREATE TABLE record_alert (id TEXT PRIMARY KEY, kind TEXT, name TEXT, age TEXT, "
-                + "description TEXT, last_seen TEXT, ts INTEGER)");
+                + "description TEXT, last_seen TEXT, ts INTEGER, authority TEXT DEFAULT '', ref TEXT DEFAULT '', "
+                + "source_url TEXT DEFAULT '')");
         db.execSQL("CREATE TABLE relay_packet (id TEXT PRIMARY KEY, payload TEXT, hops INTEGER, "
                 + "created INTEGER, uploaded INTEGER DEFAULT 0)");
+        createDirectoryTables(db);
+    }
+
+    /** Offline directory (plain SQLite): hotlines, facilities and a small key/value meta table. */
+    private static void createDirectoryTables(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS hotline (id TEXT PRIMARY KEY, name TEXT, category TEXT, "
+                + "number TEXT, description TEXT, verified INTEGER, source TEXT, source_url TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS facility (id TEXT PRIMARY KEY, kind TEXT, name TEXT, phone TEXT, "
+                + "phone_verified INTEGER, lat REAL, lon REAL, district TEXT, source TEXT, source_url TEXT, "
+                + "updated INTEGER)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_facility_kind ON facility(kind)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS dir_meta (k TEXT PRIMARY KEY, v TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        db.execSQL("DROP TABLE IF EXISTS incident");
-        db.execSQL("DROP TABLE IF EXISTS contact");
-        db.execSQL("DROP TABLE IF EXISTS record_alert");
-        db.execSQL("DROP TABLE IF EXISTS relay_packet");
-        onCreate(db);
+        // Incremental: never drop the user's own incidents, contacts or relay queue.
+        if (oldV < 2) createDirectoryTables(db);
+        if (oldV < 3) {
+            db.execSQL("ALTER TABLE record_alert ADD COLUMN authority TEXT DEFAULT ''");
+            db.execSQL("ALTER TABLE record_alert ADD COLUMN ref TEXT DEFAULT ''");
+            db.execSQL("ALTER TABLE record_alert ADD COLUMN source_url TEXT DEFAULT ''");
+        }
     }
 
     // ================================================================ incidents
@@ -144,6 +159,10 @@ public class Db extends SQLiteOpenHelper {
         public String description = "";
         public String lastSeen = "";
         public long ts;
+        /** Wanted notices only: who issued it, their case reference, and the official page. */
+        public String authority = "";
+        public String ref = "";
+        public String sourceUrl = "";
     }
 
     public void replaceRecords(List<Record> list) {
@@ -160,6 +179,9 @@ public class Db extends SQLiteOpenHelper {
                 v.put("description", r.description);
                 v.put("last_seen", r.lastSeen);
                 v.put("ts", r.ts);
+                v.put("authority", r.authority);
+                v.put("ref", r.ref);
+                v.put("source_url", r.sourceUrl);
                 db.insert("record_alert", null, v);
             }
             db.setTransactionSuccessful();
@@ -180,6 +202,9 @@ public class Db extends SQLiteOpenHelper {
                 r.description = c.getString(c.getColumnIndexOrThrow("description"));
                 r.lastSeen = c.getString(c.getColumnIndexOrThrow("last_seen"));
                 r.ts = c.getLong(c.getColumnIndexOrThrow("ts"));
+                r.authority = c.getString(c.getColumnIndexOrThrow("authority"));
+                r.ref = c.getString(c.getColumnIndexOrThrow("ref"));
+                r.sourceUrl = c.getString(c.getColumnIndexOrThrow("source_url"));
                 out.add(r);
             }
         }

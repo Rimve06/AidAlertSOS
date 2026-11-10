@@ -64,6 +64,11 @@ public final class SosEngine {
         return p.isLoggedIn() && !p.isCenter() && p.guardOn();
     }
 
+    /** True when a hardware trigger would start an SOS right now (used by the key diagnostics). */
+    public boolean canTrigger() {
+        return armed();
+    }
+
     /** Every screen ON/OFF broadcast equals one power-button press. */
     public void onScreenToggle() {
         if (!armed()) return;
@@ -149,6 +154,48 @@ public final class SosEngine {
             showTypePage();
             scheduleFinalize(snapshot.id);
         }
+        return i;
+    }
+
+    /**
+     * Support companion escalation: the user (or a countdown they did not cancel) asked for a person to check on them.
+     * No emergency-type page, no automatic phone call. The control center and the emergency contacts are told.
+     * Only a short note goes out, never the conversation.
+     */
+    public synchronized Incident triggerSupport(String note) {
+        Prefs p = Prefs.of(app);
+        if (!p.isLoggedIn() || p.isCenter()) return null;
+        Incident existing = current();
+        if (existing != null) return existing;
+        long now = System.currentTimeMillis();
+        Incident i = new Incident();
+        i.id = p.uid() + "_" + now;
+        i.userId = p.uid();
+        i.userName = p.name();
+        i.phone = p.phone();
+        i.type = "MENTAL_HEALTH";
+        i.source = "SUPPORT";
+        i.note = note == null ? "" : note;
+        i.status = "NEW";
+        i.createdAt = now;
+        i.updatedAt = now;
+        i.mine = true;
+        i.battery = batteryPercent();
+        Location last = new LocationHelper(app).lastKnown();
+        if (last != null && now - last.getTime() < 10 * 60 * 1000L) {
+            i.lat = last.getLatitude();
+            i.lon = last.getLongitude();
+            i.acc = last.getAccuracy();
+        }
+        Db.get(app).saveIncident(i);
+        p.setActive(i.id, false);
+        p.notifiedFor(i.id);
+        startTracking(i.id);
+        final Incident snapshot = i;
+        AppExecutors.io(() -> {
+            Dispatcher.sendInitial(app, snapshot);
+            Dispatcher.notifyContacts(app, snapshot);
+        });
         return i;
     }
 

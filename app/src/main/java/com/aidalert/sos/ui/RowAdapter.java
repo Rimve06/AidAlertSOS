@@ -77,6 +77,18 @@ public class RowAdapter extends RecyclerView.Adapter<RowAdapter.VH> {
         h.v.txtTitle.setText(r.title);
         h.v.txtSub.setText(r.sub);
         h.v.colorBar.setBackgroundColor(r.color);
+        // Tinted outlined card in the row's colour, like the Public Alerts mockup
+        android.graphics.drawable.GradientDrawable card = new android.graphics.drawable.GradientDrawable();
+        float dp = h.v.getRoot().getResources().getDisplayMetrics().density;
+        card.setCornerRadius(14 * dp);
+        card.setColor((r.color & 0x00FFFFFF) | 0x14000000);
+        card.setStroke(Math.max(1, (int) dp), (r.color & 0x00FFFFFF) | 0x59000000);
+        h.v.getRoot().setBackground(card);
+        android.graphics.drawable.GradientDrawable pill = new android.graphics.drawable.GradientDrawable();
+        pill.setCornerRadius(14 * dp);
+        pill.setColor(r.color);
+        h.v.txtBadge.setBackground(pill);
+        h.v.txtBadge.setTextColor(0xFFFFFFFF);
         h.v.txtBadge.setText(r.badge);
         h.v.txtBadge.setVisibility(r.badge == null || r.badge.isEmpty() ? android.view.View.GONE : android.view.View.VISIBLE);
         h.v.getRoot().setOnClickListener(x -> {

@@ -28,6 +28,8 @@ public final class AlertFeedParser {
         public String title = "";
         public String description = "";
         public String date = "";
+        public String link = "";
+        public String area = "";
     }
 
     /** The SAX handler: a subclass of DefaultHandler that collects the fields of each record. */
@@ -45,6 +47,10 @@ public final class AlertFeedParser {
         public void startElement(String uri, String localName, String qName, Attributes attrs) {
             String n = local(qName);
             if (n.equals("item") || n.equals("entry") || n.equals("info")) current = new Item();
+            // Atom: <link href="..."/>
+            if (current != null && n.equals("link") && attrs != null && attrs.getValue("href") != null && current.link.isEmpty()) {
+                current.link = attrs.getValue("href");
+            }
             text.setLength(0);
         }
 
@@ -67,6 +73,13 @@ public final class AlertFeedParser {
                 case "summary":
                 case "content":
                     if (current.description.isEmpty()) current.description = v;
+                    break;
+                case "link":
+                    if (current.link.isEmpty() && v.startsWith("http")) current.link = v;
+                    break;
+                case "country":
+                case "areadesc":
+                    if (current.area.isEmpty()) current.area = v;
                     break;
                 case "pubdate":
                 case "updated":

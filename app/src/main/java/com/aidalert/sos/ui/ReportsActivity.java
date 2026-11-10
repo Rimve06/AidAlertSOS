@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Incident;
 import com.aidalert.sos.data.IncidentProvider;
+import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivityListBinding;
 import com.aidalert.sos.util.Geo;
 import com.aidalert.sos.util.TimeUtil;
@@ -44,7 +45,10 @@ public class ReportsActivity extends BaseActivity {
 
     private void load() {
         List<RowAdapter.Row> rows = new ArrayList<>();
-        try (Cursor c = getContentResolver().query(IncidentProvider.CONTENT_URI, null, "mine=1", null, "created DESC")) {
+        String uid = Prefs.of(this).uid();
+        String selection = "mine=1" + (uid.isEmpty() ? "" : " AND user_id=?");
+        String[] args = uid.isEmpty() ? null : new String[]{uid};
+        try (Cursor c = getContentResolver().query(IncidentProvider.CONTENT_URI, null, selection, args, "created DESC")) {
             while (c != null && c.moveToNext()) {
                 Incident i = Incident.fromCursor(c);
                 rows.add(new RowAdapter.Row(Incident.label(i.type) + (i.silent ? " (silent)" : ""),

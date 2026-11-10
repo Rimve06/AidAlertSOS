@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "updated": "2026-11-07",
+  "note": "Only numbers with a cited public source are listed. Add more through the control center after verifying them.",
+  "hotlines": [
+    {
+      "id": "national-999",
+      "name": "National Emergency Service",
+      "category": "ALL",
+      "number": "999",
+      "description": "Police, fire service and ambulance (24 hours).",
+      "verified": true,
+      "source": "Prothom Alo: 999 launched in Bangladesh",
+      "sourceUrl": "https://en.prothomalo.com/science-technology/999-launched-in-Bangladesh"
+    },
+    {
+      "id": "fire-102",
+      "name": "Fire Service and Civil Defence",
+      "category": "FIRE",
+      "number": "102",
+      "description": "Fire, rescue and civil defence. Replaced the old 16163 number.",
+      "verified": true,
+      "source": "The Business Standard: Fire service launches 3-digit hotline 102",
+      "sourceUrl": "https://www.tbsnews.net/bangladesh/fire-service-launches-3-digit-hotline-number-102-870521"
+    },
+    {
+      "id": "women-children-109",
+      "name": "National Helpline: violence against women and children",
+      "category": "VIOLENCE",
+      "number": "109",
+      "description": "Support and referral for women and children facing violence.",
+      "verified": true,
+      "source": "The Daily Star: 109 Helpline Services in Bangladesh",
+      "sourceUrl": "https://online.thedailystar.net/taxonomy/term/897891"
+    },
+    {
+      "id": "child-1098",
+      "name": "Child Helpline",
+      "category": "CHILD",
+      "number": "1098",
+      "description": "Nationwide helpline for children in need.",
+      "verified": true,
+      "source": "The Daily Star: PM opens nationwide Child Helpline 1098",
+      "sourceUrl": "https://www.thedailystar.net/node/1305175"
+    },
+    {
+      "id": "central-333",
+      "name": "National Helpline 333 (government services)",
+      "category": "INFO",
+      "number": "333",
+      "description": "Government information and complaints, 24 hours. Can also help in disasters through the Deputy Commissioner.",
+      "verified": true,
+      "source": "The Daily Star: public services now a phone call away (333)",
+      "sourceUrl": "https://online-d11.thedailystar.net/bytes/receiving-information-public-services-now-just-phone-call-away-1566526"
+    },
+    {
+      "id": "acc-106",
+      "name": "Anti-Corruption Commission",
+      "category": "LAW",
+      "number": "106",
+      "description": "Report bribery and corruption.",
+      "verified": true,
+      "source": "Wikipedia: Telephone numbers in Bangladesh",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Telephone_numbers_in_Bangladesh"
+    },
+    {
+      "id": "railway-131",
+      "name": "Bangladesh Railway",
+      "category": "TRANSPORT",
+      "number": "131",
+      "description": "Train information and railway complaints.",
+      "verified": true,
+      "source": "Wikipedia: Telephone numbers in Bangladesh",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Telephone_numbers_in_Bangladesh"
+    },
+    {
+      "id": "nid-105",
+      "name": "NID services (Election Commission)",
+      "category": "INFO",
+      "number": "105",
+      "description": "National ID enquiries.",
+      "verified": true,
+      "source": "Wikipedia: Telephone numbers in Bangladesh",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Telephone_numbers_in_Bangladesh"
+    },
+    {
+      "id": "health-16263",
+      "name": "Health call centre (DGHS)",
+      "category": "HEALTH",
+      "number": "16263",
+      "description": "Doctor advice and health information, 24 hours. Number is widely published; confirm before relying on it.",
+      "verified": false
+    },
+    {
+      "id": "legal-16430",
+      "name": "National legal aid helpline",
+      "category": "LAW",
+      "number": "16430",
+      "description": "Free legal aid information. Number is widely published; confirm before relying on it.",
+      "verified": false
+    }
+  ]
+}

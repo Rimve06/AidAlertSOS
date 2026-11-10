@@ -17,6 +17,7 @@ import com.aidalert.sos.util.CallHelper;
 import com.aidalert.sos.util.Geo;
 import com.aidalert.sos.util.TimeUtil;
 import com.aidalert.sos.view.MapView;
+import com.aidalert.sos.view.TileMapView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ public class IncidentDetailActivity extends BaseActivity {
     private String id;
     private Incident inc;
     private int trailPoints;
+    private boolean mapFitted;
     private int helperCount;
     private final List<MapView.Dot> helperDots = new ArrayList<>();
     private final List<double[]> trail = new ArrayList<>();
@@ -173,19 +175,54 @@ public class IncidentDetailActivity extends BaseActivity {
             b.txtHint.setVisibility(View.GONE);
         }
 
-        List<MapView.Dot> dots = new ArrayList<>();
-        if (inc.hasFix()) {
-            MapView.Dot d = new MapView.Dot();
-            d.lat = inc.lat;
-            d.lon = inc.lon;
-            d.color = Incident.color(inc.type);
-            d.radiusDp = 10;
-            d.label = inc.userName;
-            dots.add(d);
+        // Real OpenStreetMap: the latest tracked point is the person's current position.
+        List<TileMapView.Marker> markers = new ArrayList<>();
+        List<double[]> fit = new ArrayList<>();
+        double lat = inc.lat, lon = inc.lon;
+        boolean pos = inc.hasFix();
+        if (!trail.isEmpty()) {
+            double[] last = trail.get(trail.size() - 1);
+            lat = last[0];
+            lon = last[1];
+            pos = true;
         }
-        dots.addAll(helperDots);
-        b.mapOne.setTrail(trail);
-        b.mapOne.setDots(dots);
+        if (pos) {
+            TileMapView.Marker m = new TileMapView.Marker();
+            m.lat = lat;
+            m.lon = lon;
+            m.color = Incident.color(inc.type);
+            m.label = inc.userName.isEmpty() ? "SOS" : inc.userName;
+            markers.add(m);
+            fit.add(new double[]{lat, lon});
+        }
+        for (MapView.Dot d : helperDots) {
+            TileMapView.Marker m = new TileMapView.Marker();
+            m.lat = d.lat;
+            m.lon = d.lon;
+            m.color = d.color;
+            m.label = d.label;
+            markers.add(m);
+            fit.add(new double[]{d.lat, d.lon});
+        }
+        List<TileMapView.Line> lines = new ArrayList<>();
+        if (trail.size() > 1) {
+            TileMapView.Line ln = new TileMapView.Line();
+            ln.color = Incident.color(inc.type);
+            ln.widthDp = 3;
+            for (double[] p : trail) ln.points.add(new double[]{p[0], p[1]});
+            lines.add(ln);
+        }
+        b.mapOne.setMarkers(markers);
+        b.mapOne.setLines(lines);
+        if (!mapFitted && !fit.isEmpty() && b.mapOne.getWidth() > 0) {
+            mapFitted = true;
+            if (fit.size() == 1) {
+                b.mapOne.setCenter(fit.get(0)[0], fit.get(0)[1]);
+                b.mapOne.setZoom(15);
+            } else {
+                b.mapOne.fitTo(fit);
+            }
+        }
     }
 
     private void setStatus(String status, String dispatchedAdd) {

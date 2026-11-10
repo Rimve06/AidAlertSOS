@@ -1,10 +1,20 @@
 plugins {
     id 'com.android.application'
+    // Reads app/google-services.json (download it from the Firebase Console, see docs/FIREBASE_SETUP.md)
+    id 'com.google.gms.google-services'
 }
+def localProps = new Properties()
+// Optional default Groq key for the AI assistant. Put GROQ_API_KEY=... in local.properties
+// (that file is git-ignored). It is compiled into the APK, so anyone who has the APK can extract it.
+ localProps = new java.util.Properties()
+def localFile = rootProject.file('local.properties')
+if (localFile.exists()) { localFile.withInputStream { localProps.load(it) } }
+// local.properties wins; otherwise the project's default key below is used, so the AI works straight after cloning.
+def groqDefault = (localProps.getProperty('GROQ_API_KEY') ?: '').replace('"', '')
 
 android {
     namespace 'com.aidalert.sos'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.aidalert.sos"
@@ -12,6 +22,7 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
+        buildConfigField 'String', 'GROQ_API_KEY', "\"${groqDefault}\""
     }
 
     buildTypes {
@@ -27,17 +38,31 @@ android {
 
     // Course topic: view binding
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.gridlayout:gridlayout:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'com.google.android.gms:play-services-maps3d:16.0.1'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     // Nearby Connections: store-and-forward relay when there is no internet (advanced API)
     implementation 'com.google.android.gms:play-services-nearby:19.3.0'
+    // Firebase Authentication (phone SMS code + email/password), versions managed by the BoM
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'com.google.ar:impress:1.0.0'
+    implementation 'com.google.firebase:firebase-auth'
+    // On-device text recognition: reads a prescription photo on the phone (medicine reminders)
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
 
     testImplementation 'junit:junit:4.13.2'
+    // Real org.json for JVM unit tests (the Android one is stubbed on the PC)
+    testImplementation 'org.json:json:20260814'
 }

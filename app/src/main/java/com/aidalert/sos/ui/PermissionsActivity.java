@@ -73,6 +73,10 @@ public class PermissionsActivity extends BaseActivity {
                 Perms::notifications, a -> a.ask(Perms.notificationPerms())));
         items.add(new Item("Nearby devices", "Offline relay through other phones (Bluetooth / Wi-Fi).",
                 Perms::nearby, a -> a.ask(Perms.nearbyPerms())));
+        items.add(new Item("Physical activity", "Accident detection: tells walking, driving and falling apart.",
+                Perms::activityRecognition, a -> a.ask(Perms.activityPerms())));
+        items.add(new Item("Body sensors", "Accident detection: heart-rate sensor, if your phone or watch has one.",
+                Perms::bodySensors, a -> a.ask(Perms.bodyPerms())));
         items.add(new Item("Volume-key service", "Accessibility: detects the 2-second volume holds. Turn on 'AidAlert SOS buttons'.",
                 Perms::accessibilityEnabled, a -> a.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
         items.add(new Item("Show over other apps", "Lets the emergency page open on top when the phone is in use.",

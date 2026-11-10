@@ -86,16 +86,8 @@ public class CoreLogicTest {
     public void phoneNormalisationAndUserId() {
         assertEquals("8801711000000", Crypto.normalizePhone("01711-000000"));
         assertEquals("8801711000000", Crypto.normalizePhone("+880 1711 000000"));
-        assertEquals(Crypto.userId("01711000000"), Crypto.userId("+8801711000000"));
-        assertEquals(20, Crypto.userId("01711000000").length());
-    }
-
-    @Test
-    public void passwordHashing() {
-        String salt = Crypto.newSalt();
-        String h = Crypto.hashPassword("secret1", salt);
-        assertTrue(Crypto.verifyPassword("secret1", salt, h));
-        assertFalse(Crypto.verifyPassword("secret2", salt, h));
+        assertEquals(Crypto.phoneKey("01711000000"), Crypto.phoneKey("+8801711000000"));
+        assertEquals(20, Crypto.phoneKey("01711000000").length());
     }
 
     @Test

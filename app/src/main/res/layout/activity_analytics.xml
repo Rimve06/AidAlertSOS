@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/txtSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView style="@style/AidSection" android:text="SOS PER MONTH (LAST 6 MONTHS)" />
+        <com.aidalert.sos.view.CountBarChartView
+            android:id="@+id/chartMonths"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:background="@drawable/bg_card" />
+
+        <TextView style="@style/AidSection" android:text="BY EMERGENCY TYPE" />
+        <com.aidalert.sos.view.CountBarChartView
+            android:id="@+id/chartTypes"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:background="@drawable/bg_card" />
+
+        <TextView style="@style/AidSection" android:text="BY HOUR OF DAY" />
+        <com.aidalert.sos.view.CountBarChartView
+            android:id="@+id/chartHours"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@drawable/bg_card" />
+
+        <TextView style="@style/AidSection" android:text="RESPONSE PERFORMANCE" />
+        <TextView
+            android:id="@+id/txtPerf"
+            style="@style/AidGroup"
+            android:textColor="@color/black" />
+
+        <TextView style="@style/AidSection" android:text="SOS LOCATION MAP (ALL INCIDENTS)" />
+        <com.aidalert.sos.view.TileMapView
+            android:id="@+id/mapAll"
+            android:layout_width="match_parent"
+            android:layout_height="280dp" />
+
+        <TextView style="@style/AidSection" android:text="AREAS WITH THE MOST SOS REPORTS" />
+        <TextView
+            android:id="@+id/txtAreas"
+            style="@style/AidGroup"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/txtCaveat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Read with care: more reports can simply mean more app users or better coverage in that area, not that it is more dangerous. These figures come from AidAlertSOS incidents only and are separate from the Bangladesh Police crime statistics."
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShareReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Share monthly report (text)" />
+    </LinearLayout>
+</ScrollView>

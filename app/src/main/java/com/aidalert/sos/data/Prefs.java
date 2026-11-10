@@ -33,7 +33,11 @@ public final class Prefs {
 
     // ------------------------------------------------------------ session
     public String uid() { return str("uid", ""); }
+    /** The last reason an upload to the server failed ("" when the last one worked). */
+    public String syncError() { return str("syncError", ""); }
+    public void syncError(String v) { putStr("syncError", v); }
     public String name() { return str("name", ""); }
+    public void name(String v) { putStr("name", v == null ? "" : v.trim()); }
     public String phone() { return str("phone", ""); }
     public String role() { return str("role", ROLE_CITIZEN); }
     public boolean isCenter() { return ROLE_CENTER.equals(role()); }
@@ -51,15 +55,11 @@ public final class Prefs {
         sp.edit().clear().apply();
         dbUrl(url);
         centerPriv(priv);
+        // No password material is ever stored here: Firebase Auth owns the credentials.
     }
 
-    /** Local copy of the salted password hash, so a silent SOS can be ended offline. */
-    public String pwSalt() { return str("pwSalt", ""); }
-    public String pwHash() { return str("pwHash", ""); }
-    public void setPasswordHash(String salt, String hash) { putStr("pwSalt", salt); putStr("pwHash", hash); }
-
     // ------------------------------------------------------------ server
-    public String dbUrl() { return str("dbUrl", ""); }
+    public String dbUrl() { return str("dbUrl", Config.DB_URL); }
 
     public void dbUrl(String v) {
         String s = v == null ? "" : v.trim();
@@ -69,8 +69,10 @@ public final class Prefs {
         putStr("dbUrl", s);
     }
 
-    public String authToken() { return str("authToken", ""); }
-    public void authToken(String v) { putStr("authToken", v == null ? "" : v.trim()); }
+    /** Difference to the server clock (server minus phone), learned from the Date header of server answers. */
+    public long clockOffset() { return lng("clockOffset", 0); }
+    public long clockAt() { return lng("clockAt", 0); }
+    public void clock(long offsetMs, long at) { sp.edit().putLong("clockOffset", offsetMs).putLong("clockAt", at).apply(); }
 
     // ------------------------------------------------------------ numbers
     public String centerPhone() { return str("centerPhone", ""); }
@@ -88,7 +90,7 @@ public final class Prefs {
 
     public String numAmbulance() { return str("numAmbulance", "999"); }
     public void numAmbulance(String v) { putStr("numAmbulance", v); }
-    public String numFire() { return str("numFire", "199"); }
+    public String numFire() { return str("numFire", "102"); }
     public void numFire(String v) { putStr("numFire", v); }
     public String numPolice() { return str("numPolice", "999"); }
     public void numPolice(String v) { putStr("numPolice", v); }
@@ -112,6 +114,11 @@ public final class Prefs {
     // ------------------------------------------------------------ switches
     public boolean autoCall() { return bool("autoCall", true); }
     public void autoCall(boolean v) { putBool("autoCall", v); }
+    /** Accident detection (crash / hard fall + stillness), off until the user turns it on. */
+    public boolean impactOn() { return bool("impactOn", false); }
+    public void impactOn(boolean v) { putBool("impactOn", v); }
+    public boolean onboarded() { return bool("onboarded", false); }
+    public void onboarded(boolean v) { putBool("onboarded", v); }
     public boolean guardOn() { return bool("guardOn", true); }
     public void guardOn(boolean v) { putBool("guardOn", v); }
     public boolean relayOn() { return bool("relayOn", true); }
@@ -166,10 +173,54 @@ public final class Prefs {
     public void lastBroadcast(long v) { putLng("lastBroadcast", v); }
     public long lastRecordTs() { return lng("lastRecordTs", 0); }
     public void lastRecordTs(long v) { putLng("lastRecordTs", v); }
+    public String alertsCache() { return str("alertsCache", "[]"); }
+    public void alertsCache(String v) { putStr("alertsCache", v); }
+    public long alertsCacheAt() { return lng("alertsCacheAt", 0); }
+    public void alertsCacheAt(long v) { putLng("alertsCacheAt", v); }
+    public String newsCache() { return str("newsCache", "[]"); }
+    public void newsCache(String v) { putStr("newsCache", v); }
+    public long newsCacheAt() { return lng("newsCacheAt", 0); }
+    public void newsCacheAt(long v) { putLng("newsCacheAt", v); }
+    public String statsHistory() { return str("statsHistory", ""); }
+    public void statsHistory(String v) { putStr("statsHistory", v); }
+    public String statsCache() { return str("statsCache", ""); }
+    public void statsCache(String v) { putStr("statsCache", v); }
+    /** Groq API key: the one the user typed (private app storage), otherwise the build-time default from BuildConfig. */
+    public String groqKey() {
+        String own = str("groqKey", "");
+        // a stored value that is not a real Groq key (for example text pasted into the wrong box) is ignored
+        return own.trim().startsWith("gsk_") ? own.trim() : com.aidalert.sos.BuildConfig.GROQ_API_KEY;
+    }
+    public void groqKey(String v) { putStr("groqKey", v == null ? "" : v.trim()); }
+    /** The chat model to use. A saved model that Groq has since shut down is ignored. */
+    public String groqModel() {
+        String m = str("groqModel", "");
+        return com.aidalert.sos.ai.ChatRules.isRetired(m) ? com.aidalert.sos.ai.ChatRules.DEFAULT_MODEL : m;
+    }
+    public void groqModel(String v) {
+        putStr("groqModel", com.aidalert.sos.ai.ChatRules.isRetired(v) ? com.aidalert.sos.ai.ChatRules.DEFAULT_MODEL : v.trim());
+    }
+    public String groqVisionModel() { return str("groqVisionModel", "meta-llama/llama-4-scout-17b-16e-instruct"); }
+    public String alertRegion() { return str("alertRegion", ""); }
+    public void alertRegion(String v) { putStr("alertRegion", v); }
+    public long lastPostAt() { return lng("lastPostAt", 0); }
+    public void lastPostAt(long v) { putLng("lastPostAt", v); }
     public long lastCheckin() { return lng("lastCheckin", 0); }
     public void lastCheckin(long v) { putLng("lastCheckin", v); }
     public long lastIncidentSeen() { return lng("lastIncidentSeen", 0); }
     public void lastIncidentSeen(long v) { putLng("lastIncidentSeen", v); }
+
+    /** Opt-in: notify about new missing-person reports on the public sites (off until the user turns it on). */
+    public boolean missingWatch() { return bool("missingWatch", false); }
+    public void missingWatch(boolean v) { putBool("missingWatch", v); }
+    public boolean missingBaselineDone() { return bool("missingBaseline", false); }
+    public void missingBaselineDone(boolean v) { putBool("missingBaseline", v); }
+    public long missingLastCheck() { return lng("missingLastCheck", 0); }
+    public void missingLastCheck(long v) { putLng("missingLastCheck", v); }
+
+    public void setSeen(String key, Set<String> ids) {
+        sp.edit().putStringSet("seen_" + key, new HashSet<>(ids)).apply();
+    }
 
     public Set<String> seen(String key) {
         return new HashSet<>(sp.getStringSet("seen_" + key, new HashSet<String>()));

@@ -14,16 +14,14 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.OAEPParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PSource;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Privacy helpers (plain Java so they can be unit tested on a PC):
- *  - hashed user ids and password hashing (PBKDF2),
+ *  - hashed phone keys (phoneIndex) — passwords are handled by Firebase Auth, never by this app,
  *  - hybrid encryption (AES-GCM for the data, RSA-OAEP for the AES key) so phones that
  *    relay an SOS packet offline can carry it but can never read it.
  */
@@ -31,7 +29,6 @@ public final class Crypto {
     private Crypto() {}
 
     private static final SecureRandom RNG = new SecureRandom();
-    private static final int PBKDF2_ITERATIONS = 60000;
 
     private static OAEPParameterSpec oaep() {
         return new OAEPParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA1, PSource.PSpecified.DEFAULT);
@@ -67,32 +64,9 @@ public final class Crypto {
         }
     }
 
-    /** Public user id: a hash of the phone number, so ids in the database do not reveal numbers. */
-    public static String userId(String phone) {
+    /** Key of phoneIndex/{key}: a hash of the phone number, so the database never holds numbers as keys. */
+    public static String phoneKey(String phone) {
         return sha256Hex("aidalert|" + normalizePhone(phone)).substring(0, 20);
-    }
-
-    // ---------------------------------------------------------------- passwords
-
-    public static String newSalt() {
-        byte[] s = new byte[16];
-        RNG.nextBytes(s);
-        return b64(s);
-    }
-
-    public static String hashPassword(String password, String saltB64) {
-        try {
-            PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), unb64(saltB64), PBKDF2_ITERATIONS, 256);
-            return b64(SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(spec).getEncoded());
-        } catch (java.security.GeneralSecurityException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public static boolean verifyPassword(String password, String saltB64, String expectedHashB64) {
-        byte[] a = hashPassword(password, saltB64).getBytes(StandardCharsets.UTF_8);
-        byte[] b = expectedHashB64.getBytes(StandardCharsets.UTF_8);
-        return MessageDigest.isEqual(a, b);
     }
 
     // ---------------------------------------------------------------- hybrid encryption
@@ -146,6 +120,41 @@ public final class Crypto {
             return data.doFinal(unb64(p[2]));
         } catch (java.security.GeneralSecurityException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    /** Password-protects a secret (PBKDF2 + AES-GCM) so it can be stored on the server and restored on another device. */
+    public static String wrapSecret(String secret, String password) {
+        try {
+            byte[] salt = new byte[16], iv = new byte[12];
+            SecureRandom rnd = new SecureRandom();
+            rnd.nextBytes(salt);
+            rnd.nextBytes(iv);
+            javax.crypto.SecretKeyFactory f = javax.crypto.SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            byte[] k = f.generateSecret(new javax.crypto.spec.PBEKeySpec(password.toCharArray(), salt, 60000, 256)).getEncoded();
+            Cipher c = Cipher.getInstance("AES/GCM/NoPadding");
+            c.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(k, "AES"), new GCMParameterSpec(128, iv));
+            byte[] ct = c.doFinal(secret.getBytes(StandardCharsets.UTF_8));
+            Base64.Encoder e = Base64.getEncoder();
+            return e.encodeToString(salt) + "." + e.encodeToString(iv) + "." + e.encodeToString(ct);
+        } catch (Exception ex) {
+            return "";
+        }
+    }
+
+    /** @return the secret, or null when the password is wrong / the text is damaged */
+    public static String unwrapSecret(String wrapped, String password) {
+        try {
+            String[] p = wrapped.split("\\.");
+            if (p.length != 3) return null;
+            Base64.Decoder dec = Base64.getDecoder();
+            javax.crypto.SecretKeyFactory f = javax.crypto.SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            byte[] k = f.generateSecret(new javax.crypto.spec.PBEKeySpec(password.toCharArray(), dec.decode(p[0]), 60000, 256)).getEncoded();
+            Cipher c = Cipher.getInstance("AES/GCM/NoPadding");
+            c.init(Cipher.DECRYPT_MODE, new SecretKeySpec(k, "AES"), new GCMParameterSpec(128, dec.decode(p[1])));
+            return new String(c.doFinal(dec.decode(p[2])), StandardCharsets.UTF_8);
+        } catch (Exception ex) {
+            return null;
         }
     }
 }

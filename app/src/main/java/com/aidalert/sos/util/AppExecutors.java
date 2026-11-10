@@ -19,7 +19,13 @@ public final class AppExecutors {
 
     /** Run on a background worker thread. */
     public static void io(Runnable r) {
-        IO.execute(r);
+        IO.execute(() -> {
+            try {
+                r.run();
+            } catch (RuntimeException e) {
+                android.util.Log.e("AidIO", "background task failed", e);     // a failed background job must not kill the app
+            }
+        });
     }
 
     /** Run on the UI thread. */

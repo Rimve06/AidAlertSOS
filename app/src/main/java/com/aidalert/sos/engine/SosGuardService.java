@@ -35,6 +35,7 @@ public class SosGuardService extends Service {
     private ScheduledFuture<?> syncTask;
     private boolean receiversOn;
     private ConnectivityManager cm;
+    private ImpactWatcher impact;
 
     private final BroadcastReceiver screenReceiver = new BroadcastReceiver() {
         @Override
@@ -97,6 +98,12 @@ public class SosGuardService extends Service {
         }
 
         registerAll();
+        if (Prefs.of(this).impactOn()) {
+            if (impact == null) impact = new ImpactWatcher(this);
+            impact.start();
+        } else if (impact != null) {
+            impact.stop();
+        }
         if (syncTask == null) {
             syncTask = AppExecutors.scheduler().scheduleWithFixedDelay(() -> {
                 try {
@@ -142,6 +149,7 @@ public class SosGuardService extends Service {
             syncTask.cancel(false);
             syncTask = null;
         }
+        if (impact != null) impact.stop();
         RelayManager.get(this).stop();
         LanServer.get(this).stop();
         super.onDestroy();

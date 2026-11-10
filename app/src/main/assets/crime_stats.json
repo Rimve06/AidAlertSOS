@@ -1,0 +1,383 @@
+{
+ "title": "Crime Statistics in September 2026",
+ "period": "2026-09",
+ "source": "Bangladesh Police Headquarters, monthly crime statistics",
+ "sourceUrl": "https://www.police.gov.bd/en/january_2020",
+ "note": "Transcribed from the scanned police table and checked against its own row and column totals. DMP, CMP, KMP, RMP, BMP, SMP, RPMP and GMP are the metropolitan police units; the Ranges cover the rest of each division. Narcotics, smuggling, arms and explosive figures are recovery cases.",
+ "crimeTypes": [
+  "Dacoity",
+  "Robbery",
+  "Murder",
+  "Speedy Trial",
+  "Riot",
+  "Woman & Child Repression",
+  "Kidnapping",
+  "Police Assault",
+  "Burglary",
+  "Theft",
+  "Other Cases",
+  "Arms Act",
+  "Explosive Act",
+  "Narcotics",
+  "Smuggling"
+ ],
+ "regions": [
+  {
+   "name": "DMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    23,
+    31,
+    6,
+    0,
+    135,
+    17,
+    3,
+    30,
+    102,
+    537,
+    24,
+    20,
+    498,
+    32
+   ]
+  },
+  {
+   "name": "CMP",
+   "group": "Metropolitan",
+   "counts": [
+    1,
+    9,
+    5,
+    4,
+    0,
+    49,
+    6,
+    2,
+    16,
+    25,
+    156,
+    2,
+    0,
+    169,
+    6
+   ]
+  },
+  {
+   "name": "KMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    3,
+    6,
+    1,
+    0,
+    12,
+    0,
+    0,
+    3,
+    8,
+    39,
+    11,
+    0,
+    62,
+    0
+   ]
+  },
+  {
+   "name": "RMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    5,
+    2,
+    0,
+    0,
+    12,
+    2,
+    6,
+    7,
+    17,
+    61,
+    4,
+    0,
+    161,
+    0
+   ]
+  },
+  {
+   "name": "BMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    1,
+    2,
+    0,
+    0,
+    20,
+    2,
+    0,
+    3,
+    6,
+    56,
+    1,
+    0,
+    51,
+    0
+   ]
+  },
+  {
+   "name": "SMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    1,
+    3,
+    4,
+    0,
+    13,
+    0,
+    0,
+    5,
+    11,
+    42,
+    0,
+    0,
+    54,
+    31
+   ]
+  },
+  {
+   "name": "RPMP",
+   "group": "Metropolitan",
+   "counts": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    11,
+    0,
+    0,
+    1,
+    9,
+    33,
+    1,
+    0,
+    66,
+    0
+   ]
+  },
+  {
+   "name": "GMP",
+   "group": "Metropolitan",
+   "counts": [
+    2,
+    4,
+    8,
+    3,
+    0,
+    40,
+    7,
+    3,
+    3,
+    24,
+    112,
+    5,
+    0,
+    132,
+    1
+   ]
+  },
+  {
+   "name": "Dhaka Range",
+   "group": "Range",
+   "counts": [
+    7,
+    35,
+    53,
+    14,
+    0,
+    355,
+    14,
+    4,
+    50,
+    125,
+    1334,
+    24,
+    3,
+    1314,
+    5
+   ]
+  },
+  {
+   "name": "Mymensingh Range",
+   "group": "Range",
+   "counts": [
+    0,
+    5,
+    22,
+    7,
+    0,
+    150,
+    6,
+    1,
+    9,
+    44,
+    459,
+    1,
+    0,
+    362,
+    54
+   ]
+  },
+  {
+   "name": "Chittagong Range",
+   "group": "Range",
+   "counts": [
+    11,
+    24,
+    57,
+    6,
+    2,
+    240,
+    9,
+    7,
+    66,
+    152,
+    1225,
+    28,
+    1,
+    1406,
+    35
+   ]
+  },
+  {
+   "name": "Sylhet Range",
+   "group": "Range",
+   "counts": [
+    2,
+    3,
+    15,
+    3,
+    0,
+    86,
+    0,
+    1,
+    5,
+    56,
+    451,
+    1,
+    0,
+    258,
+    32
+   ]
+  },
+  {
+   "name": "Khulna Range",
+   "group": "Range",
+   "counts": [
+    2,
+    15,
+    31,
+    18,
+    0,
+    177,
+    3,
+    3,
+    28,
+    69,
+    656,
+    22,
+    1,
+    603,
+    29
+   ]
+  },
+  {
+   "name": "Barishal Range",
+   "group": "Range",
+   "counts": [
+    2,
+    3,
+    12,
+    5,
+    0,
+    296,
+    2,
+    4,
+    30,
+    44,
+    530,
+    9,
+    1,
+    643,
+    3
+   ]
+  },
+  {
+   "name": "Rajshahi Range",
+   "group": "Range",
+   "counts": [
+    1,
+    14,
+    27,
+    8,
+    0,
+    247,
+    5,
+    1,
+    5,
+    90,
+    695,
+    24,
+    3,
+    725,
+    5
+   ]
+  },
+  {
+   "name": "Rangpur Range",
+   "group": "Range",
+   "counts": [
+    0,
+    5,
+    21,
+    1,
+    0,
+    269,
+    3,
+    5,
+    20,
+    72,
+    777,
+    3,
+    1,
+    562,
+    5
+   ]
+  },
+  {
+   "name": "Railway Range",
+   "group": "Railway",
+   "counts": [
+    0,
+    3,
+    2,
+    0,
+    0,
+    1,
+    2,
+    0,
+    0,
+    11,
+    15,
+    0,
+    0,
+    35,
+    5
+   ]
+  }
+ ]
+}

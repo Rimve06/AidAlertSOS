@@ -9,6 +9,7 @@ import com.aidalert.sos.ui.BaseActivity;
 import com.aidalert.sos.Config;
 import com.aidalert.sos.data.Db;
 import com.aidalert.sos.data.Incident;
+import com.aidalert.sos.community.CommunityActivity;
 import com.aidalert.sos.data.Prefs;
 import com.aidalert.sos.databinding.ActivityEmergencyTypeBinding;
 import com.aidalert.sos.engine.SosEngine;
@@ -56,8 +57,7 @@ public class EmergencyTypeActivity extends BaseActivity {
         b.btnOther.setOnClickListener(v -> choose("OTHER"));
         b.btnChat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)
                 .putExtra(ChatActivity.EXTRA_MODE, ChatActivity.MODE_CENTER)));
-        b.btnForum.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)
-                .putExtra(ChatActivity.EXTRA_MODE, ChatActivity.MODE_FORUM)));
+        b.btnForum.setOnClickListener(v -> startActivity(new Intent(this, CommunityActivity.class)));
         b.btnCallNow.setOnClickListener(v -> {
             if (!CallHelper.place(this, prefs.callNumber())) CallHelper.dial(this, prefs.callNumber());
         });

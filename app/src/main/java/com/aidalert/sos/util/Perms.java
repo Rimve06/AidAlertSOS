@@ -25,6 +25,11 @@ public final class Perms {
     }
 
     public static boolean location(Context c) {
+        return has(c, Manifest.permission.ACCESS_FINE_LOCATION) || has(c, Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
+
+    /** Precise (GPS) location granted, not only the approximate one. */
+    public static boolean preciseLocation(Context c) {
         return has(c, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -39,6 +44,25 @@ public final class Perms {
 
     public static boolean call(Context c) {
         return has(c, Manifest.permission.CALL_PHONE);
+    }
+
+    /** Physical activity (walking, driving, still): helps tell a crash from a normal bump. Runtime permission from Android 10. */
+    public static boolean activityRecognition(Context c) {
+        return Build.VERSION.SDK_INT < 29 || has(c, Manifest.permission.ACTIVITY_RECOGNITION);
+    }
+
+    /** Body sensors (heart rate on a paired watch or phone sensor). */
+    public static boolean bodySensors(Context c) {
+        return has(c, Manifest.permission.BODY_SENSORS);
+    }
+
+    public static String[] activityPerms() {
+        if (Build.VERSION.SDK_INT >= 29) return new String[]{Manifest.permission.ACTIVITY_RECOGNITION};
+        return new String[0];
+    }
+
+    public static String[] bodyPerms() {
+        return new String[]{Manifest.permission.BODY_SENSORS};
     }
 
     public static boolean notifications(Context c) {

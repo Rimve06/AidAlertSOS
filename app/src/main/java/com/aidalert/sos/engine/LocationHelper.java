@@ -60,21 +60,46 @@ public class LocationHelper {
         lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    /** @return true when at least one provider is delivering updates. */
     @SuppressLint("MissingPermission")
-    public void start(long intervalMs, Callback cb) {
-        if (running || lm == null || !Perms.location(ctx)) return;
-        callback = cb;
-        running = true;
-        try {
-            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, intervalMs, 0f, listener, Looper.getMainLooper());
-            }
-            if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, intervalMs, 0f, listener, Looper.getMainLooper());
-            }
-        } catch (SecurityException | IllegalArgumentException ignored) {
-            // provider missing or permission revoked
+    public boolean start(long intervalMs, Callback cb) {
+        if (lm == null || !Perms.location(ctx)) return false;
+        if (running) {
+            callback = cb;
+            return true;
         }
+        callback = cb;
+        boolean any = false;
+        // Each provider on its own: with only "approximate" permission GPS throws, but the network provider still works.
+        for (String p : new String[]{LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER, LocationManager.PASSIVE_PROVIDER}) {
+            try {
+                if (!lm.isProviderEnabled(p)) continue;
+                lm.requestLocationUpdates(p, intervalMs, 0f, listener, Looper.getMainLooper());
+                any = true;
+            } catch (SecurityException | IllegalArgumentException ignored) {
+                // this provider is missing or not allowed; try the next one
+            }
+        }
+        running = any;
+        return any;
+    }
+
+    /** True when the phone's Location switch is on (GPS or network). */
+    public boolean servicesOn() {
+        if (lm == null) return false;
+        try {
+            return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    /** A plain-words reason why no position is available yet, for the screen. */
+    public String whyNoFix() {
+        if (!Perms.location(ctx)) return "Location permission is off. Allow it in the permission dialog or in Settings > Apps > AidAlert SOS.";
+        if (!servicesOn()) return "The phone's Location switch is off. Turn Location on (quick settings) and try again.";
+        if (!Perms.preciseLocation(ctx)) return "Only approximate location is allowed, so it can be slow. Choose Precise in Settings > Apps > AidAlert SOS > Permissions.";
+        return "Waiting for GPS. Go near a window or outside; the first fix can take a minute with no internet.";
     }
 
     public void stop() {

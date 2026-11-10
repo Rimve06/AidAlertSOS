@@ -21,6 +21,7 @@ public final class Notifier {
     public static final String CH_SOS = "sos";
     public static final String CH_ALERT = "alert";
     public static final String CH_MSG = "msg";
+    public static final String CH_MISSING = "missing";
 
     public static final int ID_GUARD = 1001;
     public static final int ID_SOS_SCREEN = 1002;
@@ -40,6 +41,7 @@ public final class Notifier {
         nm.createNotificationChannel(new NotificationChannel(CH_SOS, "Active SOS", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_ALERT, "Disaster and help alerts", NotificationManager.IMPORTANCE_HIGH));
         nm.createNotificationChannel(new NotificationChannel(CH_MSG, "Messages and records", NotificationManager.IMPORTANCE_DEFAULT));
+        nm.createNotificationChannel(new NotificationChannel(CH_MISSING, "Missing person reports", NotificationManager.IMPORTANCE_DEFAULT));
     }
 
     public static PendingIntent activity(Context c, Intent i, int requestCode) {

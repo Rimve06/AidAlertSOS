@@ -1,15 +1,14 @@
 package com.aidalert.sos.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
-import com.aidalert.sos.ui.BaseActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aidalert.sos.data.Db;
@@ -27,14 +26,22 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Missing persons and wanted criminals.
- *  - Citizens: read the copy stored in their own SQLite database (works offline).
- *  - Control center: reads from the server, can add records (pushed to every phone) and delete them.
+ * Two separate lists, opened with EXTRA_KIND:
+ *  MISSING  missing people. Anyone can send a private sighting to the control center.
+ *  WANTED   official police notices only. The control center must give the issuing authority, the
+ *           case reference and the link to the official page; a notice without them is rejected.
+ *           Users can never add a wanted notice: unverified accusations must not become listings.
+ * Citizens read the SQLite copy on their phone (works offline). The control center reads the server.
  */
 public class RecordsActivity extends BaseActivity {
+    public static final String EXTRA_KIND = "kind";
+    public static final String MISSING = "MISSING";
+    public static final String WANTED = "WANTED";
+
     private ActivityListBinding b;
     private final RowAdapter adapter = new RowAdapter();
     private boolean center;
+    private String kind = MISSING;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +49,28 @@ public class RecordsActivity extends BaseActivity {
         b = ActivityListBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
         center = Prefs.of(this).isCenter();
-        setTitle("Missing persons / wanted list");
+        kind = WANTED.equals(getIntent().getStringExtra(EXTRA_KIND)) ? WANTED : MISSING;
+        final boolean wanted = WANTED.equals(kind);
+        setTitle(wanted ? "Wanted notices (official)" : "Missing persons");
         b.list.setLayoutManager(new LinearLayoutManager(this));
         b.list.setAdapter(adapter);
         b.txtInfo.setVisibility(View.VISIBLE);
-        b.txtInfo.setText(center ? "Records you add are delivered to every user's phone. Long-press a record to delete it."
-                : "If you see any of these people, contact the control center. This list is stored on your phone.");
-        adapter.setOnClick(r -> show((Db.Record) r.tag));
+        b.btnAdd.setVisibility(View.VISIBLE);
         if (center) {
-            b.btnAdd.setVisibility(View.VISIBLE);
-            b.btnAdd.setText("Add record");
+            b.txtInfo.setText(wanted
+                    ? "Publish only notices issued by the police or another authority. Authority, case reference and the official link are required. Long-press to delete."
+                    : "Records you add are delivered to every phone. Long-press to delete. Sightings sent by users are in Community > Switch view.");
+            b.btnAdd.setText(wanted ? "Add official notice" : "Add missing person");
             b.btnAdd.setOnClickListener(v -> addDialog());
             adapter.setOnLongClick(r -> confirmDelete((Db.Record) r.tag));
+        } else {
+            b.txtInfo.setText(wanted
+                    ? "Only official notices. Do not approach anyone. If you have information, call 999 or the control center."
+                    : "If you may have seen one of these people, tap the person and send a private sighting. Do not post accusations publicly.");
+            b.btnAdd.setText("Official lists (live pages)");
+            b.btnAdd.setOnClickListener(v -> officialLists());
         }
+        adapter.setOnClick(r -> show((Db.Record) r.tag));
     }
 
     @Override
@@ -85,6 +101,9 @@ public class RecordsActivity extends BaseActivity {
                     r.description = o.optString("description");
                     r.lastSeen = o.optString("lastSeen");
                     r.ts = o.optLong("ts");
+                    r.authority = o.optString("authority");
+                    r.ref = o.optString("ref");
+                    r.sourceUrl = o.optString("sourceUrl");
                     list.add(r);
                 }
                 list.sort((x, y) -> Long.compare(y.ts, x.ts));
@@ -97,23 +116,96 @@ public class RecordsActivity extends BaseActivity {
 
     private void render(List<Db.Record> list) {
         List<RowAdapter.Row> rows = new ArrayList<>();
+        boolean wanted = WANTED.equals(kind);
         for (Db.Record r : list) {
-            boolean wanted = "WANTED".equals(r.kind);
-            rows.add(new RowAdapter.Row(r.name + (r.age.isEmpty() ? "" : ", " + r.age),
-                    r.lastSeen.isEmpty() ? r.description : "Last seen: " + r.lastSeen,
+            if (!kind.equals(r.kind)) continue;
+            String sub = wanted
+                    ? (r.authority.isEmpty() ? "Authority not stated" : r.authority) + (r.ref.isEmpty() ? "" : " · Ref " + r.ref)
+                    : (r.lastSeen.isEmpty() ? r.description : "Last seen: " + r.lastSeen);
+            rows.add(new RowAdapter.Row(r.name + (r.age.isEmpty() ? "" : ", " + r.age), sub,
                     wanted ? "WANTED" : "MISSING", wanted ? 0xFF6A1B9A : 0xFFEF6C00, r));
         }
         adapter.submit(rows);
         b.txtEmpty.setVisibility(rows.isEmpty() ? View.VISIBLE : View.GONE);
-        b.txtEmpty.setText("No records right now.");
+        b.txtEmpty.setText(wanted ? "No official notices on this phone right now." : "No missing-person records right now.");
     }
 
-    private void show(Db.Record r) {
-        new AlertDialog.Builder(this)
-                .setTitle(r.kind + ": " + r.name)
-                .setMessage("Age: " + r.age + "\nLast seen: " + r.lastSeen + "\n\n" + r.description + "\n\nAdded " + TimeUtil.clock(r.ts))
-                .setPositiveButton("Close", null)
-                .show();
+    private void show(final Db.Record r) {
+        boolean wanted = WANTED.equals(r.kind);
+        StringBuilder sb = new StringBuilder();
+        if (!r.age.isEmpty()) sb.append("Age: ").append(r.age).append("\n");
+        if (!wanted) sb.append("Last seen: ").append(r.lastSeen).append("\n");
+        if (wanted) {
+            sb.append("Issued by: ").append(r.authority.isEmpty() ? "not stated" : r.authority).append("\n");
+            sb.append("Case reference: ").append(r.ref.isEmpty() ? "not stated" : r.ref).append("\n");
+        }
+        sb.append("\n").append(r.description).append("\n\nPublished ").append(TimeUtil.clock(r.ts));
+        AlertDialog.Builder d = new AlertDialog.Builder(this).setTitle(r.name).setMessage(sb.toString())
+                .setNegativeButton("Close", null);
+        if (r.sourceUrl != null && r.sourceUrl.startsWith("http")) {
+            d.setNeutralButton("Official page", (x, w) -> openUrl(r.sourceUrl));
+        }
+        if (!wanted && !center) d.setPositiveButton("Report a sighting", (x, w) -> sighting(r));
+        d.show();
+    }
+
+    private void openUrl(String url) {
+        startActivity(WebActivity.open(this, url, "Official page"));
+    }
+
+    /** Private report to the control center only; it is never shown to other users. */
+    private void sighting(final Db.Record r) {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(48, 16, 48, 0);
+        final EditText where = field("Where did you see them?", InputType.TYPE_CLASS_TEXT);
+        final EditText when = field("When?", InputType.TYPE_CLASS_TEXT);
+        final EditText note = field("What did you notice? (clothes, who they were with)", InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+        box.addView(where);
+        box.addView(when);
+        box.addView(note);
+        new AlertDialog.Builder(this).setTitle("Sighting of " + r.name).setView(box)
+                .setPositiveButton("Send privately", (d, w) -> {
+                    String wh = Ui.clean(where.getText());
+                    if (wh.length() < 3) {
+                        Ui.toast(this, "Say where you saw them.");
+                        return;
+                    }
+                    final JSONObject o = new JSONObject();
+                    try {
+                        o.put("type", "SIGHTING");
+                        o.put("recordId", r.id);
+                        o.put("recordName", r.name);
+                        o.put("where", wh);
+                        o.put("when", Ui.clean(when.getText()));
+                        o.put("note", Ui.clean(note.getText()));
+                        o.put("by", Prefs.of(this).uid());
+                        o.put("byName", Prefs.of(this).name());
+                        o.put("ts", System.currentTimeMillis());
+                    } catch (JSONException e) {
+                        return;
+                    }
+                    AppExecutors.io(() -> {
+                        String key = new FirebaseRest(this).post("sightings", o);
+                        AppExecutors.main(() -> Ui.toast(this, key != null
+                                ? "Sent to the control center. Thank you."
+                                : "Could not send. Sign in and check your connection."));
+                    });
+                })
+                .setNegativeButton("Cancel", null).show();
+    }
+
+    private void officialLists() {
+        com.aidalert.sos.news.FeedConfig cfg = com.aidalert.sos.news.FeedConfig.load(this);
+        java.util.List<com.aidalert.sos.news.FeedConfig.Feed> l = WANTED.equals(kind) ? cfg.wanted : cfg.missing;
+        String[] n = new String[l.size()];
+        String[] u = new String[l.size()];
+        for (int i = 0; i < n.length; i++) {
+            n[i] = l.get(i).name;
+            u[i] = l.get(i).url;
+        }
+        if (n.length == 0) return;
+        startActivity(SourceBrowserActivity.intent(this, WANTED.equals(kind) ? "Wanted notices" : "Missing persons", n, u, ""));
     }
 
     private void confirmDelete(final Db.Record r) {
@@ -126,43 +218,49 @@ public class RecordsActivity extends BaseActivity {
     }
 
     private void addDialog() {
+        final boolean wanted = WANTED.equals(kind);
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setPadding(48, 16, 48, 0);
-        final RadioGroup kind = new RadioGroup(this);
-        kind.setOrientation(RadioGroup.HORIZONTAL);
-        RadioButton missing = new RadioButton(this);
-        missing.setText("Missing person");
-        missing.setId(View.generateViewId());
-        RadioButton wanted = new RadioButton(this);
-        wanted.setText("Wanted criminal");
-        wanted.setId(View.generateViewId());
-        kind.addView(missing);
-        kind.addView(wanted);
-        kind.check(missing.getId());
         final EditText name = field("Full name", InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         final EditText age = field("Age", InputType.TYPE_CLASS_NUMBER);
         final EditText seen = field("Last seen (place / time)", InputType.TYPE_CLASS_TEXT);
         final EditText desc = field("Description, contact instructions", InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-        box.addView(kind);
+        final EditText authority = field("Issuing authority (e.g. Bangladesh Police)", InputType.TYPE_CLASS_TEXT);
+        final EditText ref = field("Case / notice reference", InputType.TYPE_CLASS_TEXT);
+        final EditText url = field("Link to the official notice (https://...)", InputType.TYPE_TEXT_VARIATION_URI);
         box.addView(name);
         box.addView(age);
-        box.addView(seen);
+        if (!wanted) box.addView(seen);
         box.addView(desc);
-        new AlertDialog.Builder(this).setTitle("New record").setView(box)
+        if (wanted) {
+            box.addView(authority);
+            box.addView(ref);
+        }
+        box.addView(url);
+        new AlertDialog.Builder(this).setTitle(wanted ? "New official notice" : "New missing person").setView(box)
                 .setPositiveButton("Publish", (d, w) -> {
                     final String n = Ui.clean(name.getText());
+                    final String link = Ui.clean(url.getText());
                     if (n.isEmpty()) {
                         Ui.toast(this, "Name is required");
                         return;
                     }
+                    if (wanted && (Ui.clean(authority.getText()).isEmpty() || Ui.clean(ref.getText()).isEmpty()
+                            || !link.startsWith("http"))) {
+                        Ui.toast(this, "A wanted notice needs the authority, the reference and the official link.");
+                        return;
+                    }
                     final JSONObject o = new JSONObject();
                     try {
-                        o.put("kind", kind.getCheckedRadioButtonId() == wanted.getId() ? "WANTED" : "MISSING");
+                        o.put("kind", kind);
                         o.put("name", n);
                         o.put("age", Ui.clean(age.getText()));
                         o.put("lastSeen", Ui.clean(seen.getText()));
                         o.put("description", Ui.clean(desc.getText()));
+                        o.put("authority", Ui.clean(authority.getText()));
+                        o.put("ref", Ui.clean(ref.getText()));
+                        o.put("sourceUrl", link);
                         o.put("ts", System.currentTimeMillis());
                     } catch (JSONException e) {
                         return;

@@ -31,6 +31,10 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
@@ -38,6 +42,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission
@@ -83,6 +89,32 @@
         <activity android:name=".ui.RecordsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.ReportsActivity" android:exported="false" />
         <activity android:name=".ui.AlertsActivity" android:exported="false" />
+        <activity android:name=".directory.DirectoryActivity" android:exported="false" />
+        <activity android:name=".directory.MapActivity" android:exported="false" />
+        <activity android:name=".ui.ServerCheckActivity" android:exported="false" />
+        <activity android:name=".ui.OnboardingActivity" android:exported="false" />
+        <activity android:name=".ui.ImpactCountdownActivity" android:exported="false" android:showWhenLocked="true" android:turnScreenOn="true" android:launchMode="singleTask" />
+        <activity android:name=".ui.GuideActivity" android:exported="false" />
+        <activity android:name=".tools.UtilitiesActivity" android:exported="false" />
+        <activity android:name=".tools.FakeCallActivity" android:exported="false" android:showWhenLocked="true" android:turnScreenOn="true" />
+        <activity android:name=".medicine.MedicineActivity" android:exported="false" />
+        <activity android:name=".report.ReportIncidentActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <receiver android:name=".medicine.MedicineReceiver" android:exported="false" />
+        <service
+            android:name=".missing.MissingJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <activity android:name=".ai.AssistantActivity" android:exported="false" />
+        <activity android:name=".learn.LearnActivity" android:exported="false" />
+        <activity android:name=".learn.LearnDetailActivity" android:exported="false" />
+        <activity android:name=".ui.WebActivity" android:exported="false" />
+        <activity android:name=".ui.SourceBrowserActivity" android:exported="false" />
+        <activity android:name=".ui.NewsActivity" android:exported="false" />
+        <activity android:name=".blood.BloodActivity" android:exported="false" />
+        <activity android:name=".ui.center.LiveMapActivity" android:exported="false" />
+        <activity android:name=".support.SupportActivity" android:exported="false" />
+        <activity android:name=".stats.CrimeStatsActivity" android:exported="false" />
+        <activity android:name=".community.CommunityActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.SettingsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.PermissionsActivity" android:exported="false" />
         <activity android:name=".ui.DisasterRespondActivity" android:exported="false" android:showWhenLocked="true" />
@@ -94,6 +126,9 @@
         <activity android:name=".ui.center.DisasterAdminActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.center.BroadcastActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.center.MonitorActivity" android:exported="false" />
+        <activity android:name=".ui.center.IncidentsActivity" android:exported="false" />
+        <activity android:name=".ui.center.InboxActivity" android:exported="false" />
+        <activity android:name=".ui.center.AnalyticsActivity" android:exported="false" />
 
         <!-- Services -->
         <service

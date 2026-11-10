@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Cloud Firestore rules for the AidAlert blood donor list.
+// Publish: Firebase console > Build > Firestore Database > Rules > paste this whole file > Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Donor profiles: any signed-in user can read; only the owner can write their own profile.
+    match /donors/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['name', 'group', 'district', 'available', 'ts'])
+        && request.resource.data.keys().hasOnly(['name', 'group', 'district', 'area', 'available', 'showPhone', 'lastDonation', 'ts'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 80
+        && request.resource.data.group in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        && request.resource.data.district is string && request.resource.data.district.size() <= 60
+        && request.resource.data.available is bool;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Phone numbers: readable by signed-in users only while the donor has allowed sharing; written only by the owner.
+    match /donorContacts/{uid} {
+      allow read: if request.auth != null
+        && get(/databases/$(database)/documents/donors/$(uid)).data.showPhone == true;
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['phone'])
+        && request.resource.data.phone is string;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
